@@ -1,0 +1,124 @@
+<script>
+  import { onMount } from "svelte";
+  import { location, push } from "svelte-spa-router";
+  import Home from "../../icons/Home.svelte";
+  import Manage from "../../icons/Manage.svelte";
+  import Create from "../../icons/Create.svelte";
+  import Find from "../../icons/Find.svelte";
+  import XCircle from "../../icons/XCircle.svelte";
+  import User from "../../icons/User.svelte";
+  import store from "../../store.js";
+
+  let walletIconHover = false;
+
+  const initWallet = async () => {
+    const address = await window.tezbridge.request({ method: "get_source" });
+    store.updateUserAddress(address);
+  };
+
+  onMount(async () => {
+    try {
+      const address = await window.tezbridge.request({ method: "get_source" });
+      store.updateUserAddress(address);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+</script>
+
+<style>
+  .navigation {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-right: solid 1px grey;
+    padding: 70px 0px;
+    position: fixed;
+  }
+
+  .navigation-element {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0px;
+    cursor: pointer;
+    padding: 6px;
+    width: 100%;
+    border: solid 1px #4a4a4a;
+  }
+
+  .navigation-element:hover {
+    border: solid 1px #a3a3a3;
+    background-color: #a3a3a3;
+  }
+
+  .navigation-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .navigation {
+      flex-direction: row;
+      padding: 10px 5px;
+      height: 60px;
+      width: 100%;
+    }
+
+    .navigation-element {
+      padding: 4px;
+    }
+
+    .navigation-icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
+</style>
+
+<div class="navigation has-text-centered has-background-grey-dark">
+  <div class="navigation-element" on:click={() => push('/')}>
+    <div class="image navigation-icon">
+      <Home color={$location === '/' ? 'white' : undefined} />
+    </div>
+    <span class:has-text-white={$location === '/'}>Home</span>
+  </div>
+  <div class="navigation-element" on:click={() => push('/create')}>
+    <div class="image navigation-icon">
+      <Create color={$location === '/create' ? 'white' : undefined} />
+    </div>
+    <span class:has-text-white={$location === '/create'}>Create</span>
+  </div>
+  <div class="navigation-element" on:click={() => push('/manage')}>
+    <div class="image navigation-icon">
+      <Manage color={$location === '/manage' ? 'white' : undefined} />
+    </div>
+    <span class:has-text-white={$location === '/manage'}>Manage</span>
+  </div>
+  <div class="navigation-element" on:click={() => push('/view')}>
+    <div class="image navigation-icon">
+      <Find color={$location === '/view' ? 'white' : undefined} />
+    </div>
+    <span class:has-text-white={$location === '/view'}>Find</span>
+  </div>
+  <br />
+  <div
+    class="navigation-element"
+    on:click={initWallet}
+    on:mouseenter={() => (walletIconHover = true)}
+    on:mouseleave={() => (walletIconHover = false)}>
+    <div class="image navigation-icon">
+      {#if $store.userAddress}
+        <User color={walletIconHover ? '#333' : '#B5B5B5'} />
+      {:else}
+        <XCircle color={walletIconHover ? '#333' : '#B5B5B5'} />
+      {/if}
+    </div>
+    <span class={walletIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+      Wallet
+    </span>
+  </div>
+</div>

@@ -1,0 +1,1 @@
+<main>Manage token</main>
