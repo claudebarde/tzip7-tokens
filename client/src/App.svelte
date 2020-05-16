@@ -13,8 +13,8 @@
   const routes = {
     "/": Landing,
     "/create": CreateToken,
-    "/manage": ManageToken,
-    "/view": ViewToken
+    "/manage/:tokenSymbol?": ManageToken,
+    "/view/:tokenSymbol": ViewToken
   };
 
   onMount(async () => {

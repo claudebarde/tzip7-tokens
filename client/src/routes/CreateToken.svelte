@@ -74,7 +74,7 @@
         await op.confirmation();
         const storage = await contract.storage();
         store.updateContractStorage(storage);
-        push("/manage");
+        push(`/manage/${tokenSymbol}`);
         creatingNewToken = false;
       } else {
         throw new Error("No generated address");
@@ -87,22 +87,6 @@
 </script>
 
 <style>
-  .interface {
-    min-height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-  }
-
-  .interface__navbar {
-    padding: 0px;
-    margin: 0px;
-  }
-
-  .interface__main {
-    width: 100%;
-  }
-
   .home-img {
     max-width: 400px;
   }

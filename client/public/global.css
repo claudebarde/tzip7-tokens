@@ -10,3 +10,20 @@ body {
   padding: 0;
   font-family: Helvetica;
 }
+
+.interface {
+  min-height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.interface__navbar {
+  padding: 0px;
+  margin: 0px;
+  width: 8%;
+}
+
+.interface__main {
+  width: 100%;
+}

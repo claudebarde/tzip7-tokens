@@ -10,6 +10,10 @@
   import store from "../../store.js";
 
   let walletIconHover = false;
+  let homeIconHover = false;
+  let createIconHover = false;
+  let manageIconHover = false;
+  let findIconHover = false;
 
   const initWallet = async () => {
     const address = await window.tezbridge.request({ method: "get_source" });
@@ -22,6 +26,7 @@
       store.updateUserAddress(address);
     } catch (error) {
       console.log(error);
+      store.updateUserAddress(null);
     }
   });
 </script>
@@ -80,29 +85,47 @@
 </style>
 
 <div class="navigation has-text-centered has-background-grey-dark">
-  <div class="navigation-element" on:click={() => push('/')}>
+  <div
+    class="navigation-element"
+    on:click={() => push('/')}
+    on:mouseenter={() => (homeIconHover = true)}
+    on:mouseleave={() => (homeIconHover = false)}>
     <div class="image navigation-icon">
-      <Home color={$location === '/' ? 'white' : undefined} />
+      <Home
+        color={$location === '/' ? 'white' : homeIconHover ? '#333' : '#B5B5B5'} />
     </div>
-    <span class:has-text-white={$location === '/'}>Home</span>
+    <span
+      class={$location === '/' ? 'has-text-white' : homeIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+      Home
+    </span>
   </div>
-  <div class="navigation-element" on:click={() => push('/create')}>
+  <div
+    class="navigation-element"
+    on:click={() => push('/create')}
+    on:mouseenter={() => (createIconHover = true)}
+    on:mouseleave={() => (createIconHover = false)}>
     <div class="image navigation-icon">
-      <Create color={$location === '/create' ? 'white' : undefined} />
+      <Create
+        color={$location === '/create' ? 'white' : createIconHover ? '#333' : '#B5B5B5'} />
     </div>
-    <span class:has-text-white={$location === '/create'}>Create</span>
+    <span
+      class={$location === '/create' ? 'has-text-white' : createIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+      Create
+    </span>
   </div>
-  <div class="navigation-element" on:click={() => push('/manage')}>
+  <div
+    class="navigation-element"
+    on:click={() => push('/manage')}
+    on:mouseenter={() => (manageIconHover = true)}
+    on:mouseleave={() => (manageIconHover = false)}>
     <div class="image navigation-icon">
-      <Manage color={$location === '/manage' ? 'white' : undefined} />
+      <Manage
+        color={$location.includes('/manage') ? 'white' : manageIconHover ? '#333' : '#B5B5B5'} />
     </div>
-    <span class:has-text-white={$location === '/manage'}>Manage</span>
-  </div>
-  <div class="navigation-element" on:click={() => push('/view')}>
-    <div class="image navigation-icon">
-      <Find color={$location === '/view' ? 'white' : undefined} />
-    </div>
-    <span class:has-text-white={$location === '/view'}>Find</span>
+    <span
+      class={$location.includes('/manage') ? 'has-text-white' : manageIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+      Manage
+    </span>
   </div>
   <br />
   <div
