@@ -58,7 +58,7 @@
     <input
       id="tokensToMint"
       class="input"
-      class-is-danger={mintingError}
+      class:is-danger={mintingError}
       type="number"
       placeholder="Amount of tokens to mint"
       on:input={formatValue}

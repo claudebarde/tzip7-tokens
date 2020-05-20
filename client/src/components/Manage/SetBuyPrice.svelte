@@ -43,16 +43,16 @@
 <div class="box">
   <p class="title is-6">Set Buy Price</p>
   <p>
-    Here you can set a new price for your tokens that the other users will pay
-    in order to acquire more of your tokens.
+    You can set a new price for your tokens that the other users will pay in
+    order to acquire more of your tokens.
   </p>
   <br />
   <div>
-    <label for="tokensToSupply">Which price do you want to set?</label>
+    <label for="setPrice">Which price do you want to set?</label>
     <input
-      id="tokensToSupply"
+      id="setPrice"
       class="input"
-      class-is-danger={priceError}
+      class:is-danger={priceError}
       type="number"
       placeholder="Price in XTZ"
       on:input={formatValue}

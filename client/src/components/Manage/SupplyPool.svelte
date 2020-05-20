@@ -62,7 +62,7 @@
     <input
       id="tokensToSupply"
       class="input"
-      class-is-danger={supplyError}
+      class:is-danger={supplyError}
       type="number"
       placeholder="Amount of tokens to mint"
       on:input={formatValue}

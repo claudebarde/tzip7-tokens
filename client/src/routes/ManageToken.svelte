@@ -5,6 +5,7 @@
   import SupplyPool from "../components/Manage/SupplyPool.svelte";
   import TokenInfo from "../components/Manage/TokenInfo.svelte";
   import SetBuyPrice from "../components/Manage/SetBuyPrice.svelte";
+  import Approve from "../components/Manage/Approve.svelte";
   import store from "../store";
 
   export let params = {};
@@ -165,7 +166,7 @@
                 <SetBuyPrice />
               </div>
               <div class="column is-two-fifths">
-                Approve third-party account
+                <Approve />
               </div>
             </div>
             <div class="columns is-centered">
