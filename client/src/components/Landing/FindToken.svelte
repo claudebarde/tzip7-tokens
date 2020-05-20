@@ -38,6 +38,7 @@
 
 <div class="box main">
   <div class="title is-5">Find tokens</div>
+  <p class="subtitle is-5">Browse other tokens created with this website</p>
   <div
     class="dropdown"
     class:is-active={tokensSuggestions.length > 0}
@@ -48,7 +49,7 @@
           type="text"
           class="input is-medium"
           class:is-danger={noSuggestion}
-          placeholder="Your token symbol"
+          placeholder="Token symbol"
           on:input={searchTokens}
           value={searchValue} />
         <span class="icon is-medium is-left">

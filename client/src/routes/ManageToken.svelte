@@ -1,15 +1,21 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, afterUpdate } from "svelte";
   import Navbar from "../components/Navbar/Navbar.svelte";
+  import MintTokens from "../components/Manage/MintTokens.svelte";
+  import SupplyPool from "../components/Manage/SupplyPool.svelte";
+  import TokenInfo from "../components/Manage/TokenInfo.svelte";
   import store from "../store";
 
   export let params = {};
 
+  let token = undefined;
   let tokenSymbol = undefined;
+  let ownerBalance = undefined;
   let tokensSuggestions = [];
   let searchValue = "";
   let noSuggestion = false;
   let isAllowed = undefined;
+  let isUnknown = false;
 
   const searchTokens = event => {
     const input = event.target.value.trim().toUpperCase();
@@ -30,25 +36,37 @@
     }
   };
 
-  $: if (tokenSymbol && $store.contractStorage) {
-    // checks if current user has the right to manage the token
-    (async () => {
+  onMount(() => {
+    if (params.tokenSymbol) {
+      tokenSymbol = params.tokenSymbol;
+    }
+  });
+
+  afterUpdate(async () => {
+    if (tokenSymbol && $store.contractStorage && !$store.tokenStorage) {
+      // checks if current user has the right to manage the token
       try {
         const _token = await $store.contractStorage.tokens.get(tokenSymbol);
+        if (!_token) throw "UnknownToken";
+
         if (_token.owner === $store.userAddress) {
           isAllowed = true;
         } else {
           isAllowed = false;
         }
+        // creates token contract instance and saves important info
+        token = _token;
+        const tokenInstance = await $store.Tezos.contract.at(_token.address);
+        store.updateTokenInstance(tokenInstance);
+        const tokenStorage = await tokenInstance.storage();
+        store.updateTokenStorage(tokenStorage);
+        ownerBalance =
+          (await tokenStorage.ledger.get(_token.owner)).balance.toNumber() || 0;
       } catch (error) {
-        console.log(error);
+        if (error === "UnknownToken") {
+          isUnknown = true;
+        }
       }
-    })();
-  }
-
-  onMount(() => {
-    if (params.tokenSymbol) {
-      tokenSymbol = params.tokenSymbol;
     }
   });
 </script>
@@ -101,28 +119,59 @@
           </div>
         </div>
       </section>
-    {:else if $store.userAddress === null}
-      <div class="columns is-centered">
-        <div class="column is-half">
+    {:else}
+      <!-- if token exists-->
+      {#if $store.userAddress === null}
+        <div class="columns is-centered">
+          <div class="column is-half">
+            <section class="section">
+              <div class="container">
+                <article class="message is-danger">
+                  <div class="message-body">
+                    You must be connected to manage a token.
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
+        </div>
+      {:else if isAllowed}
+        <section class="section">
+          <div class="container">
+            <p class="title is-3">Manage your token - {tokenSymbol}</p>
+            <TokenInfo
+              {tokenSymbol}
+              tokenStorage={$store.tokenStorage}
+              userBalance={ownerBalance} />
+            <div class="columns is-centered">
+              <div class="column is-two-fifths">
+                <MintTokens
+                  on:updateUserBalance={event => {
+                    ownerBalance += event.detail;
+                  }} />
+              </div>
+              <div class="column is-two-fifths">
+                <SupplyPool />
+              </div>
+            </div>
+          </div>
+        </section>
+      {:else}
+        <!-- if user is allowed-->
+        {#if !isAllowed && !isUnknown}
           <section class="section">
             <div class="container">
-              <article class="message is-danger">
-                <div class="message-body">
-                  You must be connected to manage a token.
-                </div>
-              </article>
+              {#if !$store.userAddress}
+                Please log in to identify yourself
+              {:else}You are not allowed to manage this token{/if}
             </div>
           </section>
-        </div>
-      </div>
-    {:else if isAllowed}
-      <section class="section">
-        <div class="container">Manage your token</div>
-      </section>
-    {:else}
-      <section class="section">
-        <div class="container">You are not allowed to manage this token</div>
-      </section>
+        {:else if isUnknown}
+          <section class="section">
+            <div class="container">This token doesn't seem to exist</div>
+          </section>
+        {/if}
+      {/if}
     {/if}
   </div>
 </div>

@@ -3,11 +3,13 @@ import config from "./config";
 
 const blankState = {
   contractAddress:
-    config.NETWORK === "local" ? "KT1TqPdKi3mQwbfHWuKxCVZThaamAFwuUV32" : "",
+    config.NETWORK === "local" ? "KT1SUeQ8GpFYgSVbEW9LGmZDgREja8Lvpr1E" : "",
   contractInstance: undefined,
   contractStorage: undefined,
   userAddress: undefined,
   Tezos: undefined,
+  tokenInstance: undefined,
+  tokenStorage: undefined,
 };
 
 const store = writable(blankState);
@@ -28,6 +30,12 @@ const state = {
   },
   updateTezos: (Tezos) => {
     store.update((store) => ({ ...store, Tezos }));
+  },
+  updateTokenInstance: (instance) => {
+    store.update((store) => ({ ...store, tokenInstance: instance }));
+  },
+  updateTokenStorage: (storage) => {
+    store.update((store) => ({ ...store, tokenStorage: storage }));
   },
 };
 

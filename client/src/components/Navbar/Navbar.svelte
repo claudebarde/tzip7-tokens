@@ -14,19 +14,34 @@
   let createIconHover = false;
   let manageIconHover = false;
   let findIconHover = false;
+  let tezbridgeSigner = undefined;
 
   const initWallet = async () => {
     const address = await window.tezbridge.request({ method: "get_source" });
     store.updateUserAddress(address);
+    if (window.localStorage) {
+      window.localStorage.setItem("lastConnection", Date.now());
+    }
   };
 
   onMount(async () => {
-    try {
-      const address = await window.tezbridge.request({ method: "get_source" });
-      store.updateUserAddress(address);
-    } catch (error) {
-      console.log(error);
-      store.updateUserAddress(null);
+    if (window.localStorage) {
+      const lastConnection = window.localStorage.getItem("lastConnection");
+      // if last connection happened in the last 3 days
+      if (
+        lastConnection &&
+        Date.now() - lastConnection < 60 * 60 * 24 * 3 * 1000
+      ) {
+        try {
+          const address = await window.tezbridge.request({
+            method: "get_source"
+          });
+          store.updateUserAddress(address);
+        } catch (error) {
+          console.log(error);
+          store.updateUserAddress(null);
+        }
+      }
     }
   });
 </script>

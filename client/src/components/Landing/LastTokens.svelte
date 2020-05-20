@@ -2,13 +2,14 @@
   import { afterUpdate } from "svelte";
   import store from "../../store";
 
-  let tokens = [];
+  let tokenChunks = [];
 
   afterUpdate(async () => {
     if (
       $store.contractStorage &&
       $store.contractStorage.tokensList &&
-      tokens.length === 0
+      $store.contractStorage.tokensList.length > 0 &&
+      tokenChunks.length === 0
     ) {
       const tokensList = $store.contractStorage.tokensList.slice(0, 10);
       const tokensInfo = Promise.all(
@@ -16,7 +17,11 @@
           async token => await $store.contractStorage.tokens.get(token)
         )
       );
-      tokens = [...(await tokensInfo)];
+      const _tokens = [...(await tokensInfo)];
+      tokenChunks = Array(Math.ceil(_tokens.length / 3))
+        .fill()
+        .map((_, index) => index * 3)
+        .map(begin => _tokens.slice(begin, begin + 3));
     }
   });
 </script>
@@ -28,17 +33,27 @@
 </style>
 
 <div class="box main">
-  <div class="title is-5">Last created tokens</div>
+  <div class="title is-5 is-marginless">Last created tokens</div>
   {#if $store.contractStorage && $store.contractStorage.tokensList}
-    {#each tokens.slice(0, 10) as token}
-      <div class="subtitle is-6" style="margin-top:20px;">
-        <a href={`#/view/${token.symbol}`}>{token.symbol} ({token.name})</a>
-      </div>
-    {:else}
-      <div class="subtitle is-6" style="margin-top:20px;">
-        No token created yet!
-      </div>
-    {/each}
+    <div class="columns">
+      {#each tokenChunks as tokens}
+        <div class="column is-one-third">
+          {#each tokens as token}
+            <div class="subtitle is-6" style="margin-top:20px;">
+              <a href={`#/view/${token.symbol}`}>
+                {token.symbol} ({token.name})
+              </a>
+            </div>
+          {/each}
+        </div>
+      {:else}
+        <div class="column is-one-third">
+          <div class="subtitle is-6" style="margin-top:20px;">
+            No token created yet!
+          </div>
+        </div>
+      {/each}
+    </div>
   {:else}
     <div class="subtitle is-6" style="margin-top:20px;">Loading...</div>
   {/if}

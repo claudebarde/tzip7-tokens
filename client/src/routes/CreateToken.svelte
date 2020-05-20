@@ -12,6 +12,9 @@
   let creatingNewToken = false;
   let tokenNameError = false;
   let tokenSymbolError = false;
+  let firstTx = false;
+  let waitingSecondTx = false;
+  let secondTx = false;
 
   const updateTokenName = event => {
     const input = event.target.value
@@ -45,6 +48,7 @@
 
   const originateContract = async () => {
     creatingNewToken = true;
+    firstTx = true;
     // deploying contract for new token
     try {
       const originationOp = await $store.Tezos.contract.originate({
@@ -65,21 +69,32 @@
         }
       });
       const contract = await originationOp.contract();
-      console.log(contract.address);
+      console.log("New token address:", contract.address);
       if (contract.address) {
+        firstTx = false;
+        waitingSecondTx = true;
         // saving token address
         const op = await $store.contractInstance.methods
           .main(tokenName, tokenSymbol, contract.address)
           .send();
+        waitingSecondTx = false;
+        secondTx = true;
         await op.confirmation();
-        const storage = await contract.storage();
+        // fetching new storage
+        const storage = await $store.contractInstance.storage();
         store.updateContractStorage(storage);
+        // redirect to manage page
         push(`/manage/${tokenSymbol}`);
-        creatingNewToken = false;
       } else {
+        firstTx = false;
+        waitingSecondTx = false;
+        secondTx = false;
         throw new Error("No generated address");
       }
     } catch (error) {
+      firstTx = false;
+      waitingSecondTx = false;
+      secondTx = false;
       console.log("Error:", error);
       creatingNewToken = false;
     }
@@ -126,23 +141,51 @@
       <section class="modal-card-body">
         <p class="title is-5">This is the token you are about to create:</p>
         <div class="columns is-mobile is-centered">
-          <div class="column is-one-third">Token Name:</div>
-          <div class="column is-one-third">{tokenName}</div>
+          <div class="column is-one-fourth">Token Name:</div>
+          <div class="column is-one-fourth">{tokenName}</div>
+          <div class="column is-one-fourth">Token Symbol:</div>
+          <div class="column is-one-fourth">{tokenSymbol}</div>
         </div>
         <div class="columns is-mobile is-centered">
-          <div class="column is-one-third">Token Symbol:</div>
-          <div class="column is-one-third">{tokenSymbol}</div>
-        </div>
-        <div class="columns is-mobile is-centered">
-          <div class="column is-one-third">Token Decimals:</div>
-          <div class="column is-one-third">{tokenDecimals}</div>
-        </div>
-        <div class="columns is-mobile is-centered">
-          <div class="column is-one-third">Admin Address:</div>
-          <div class="column is-one-third">
+          <div class="column is-one-fourth">Token Decimals:</div>
+          <div class="column is-one-fourth">{tokenDecimals}</div>
+          <div class="column is-one-fourth">Admin Address:</div>
+          <div class="column is-one-fourth">
             {$store.userAddress.slice(0, 7) + '...' + $store.userAddress.slice(-7)}
           </div>
         </div>
+        <p class="title is-5">Your confirmation requires 2 transactions:</p>
+        <p>
+          During the first transaction, your token will be created and added to
+          the blockchain.
+        </p>
+        <p>
+          During the second transaction, your token address will be added to the
+          main contract.
+        </p>
+        <br />
+        <p>
+          Do not skip the second transaction or the other users won't be able to
+          find your token!
+        </p>
+        <br />
+        {#if firstTx}
+          <div class="message is-info">
+            <div class="message-body">Creating your token, please wait...</div>
+          </div>
+        {/if}
+        {#if waitingSecondTx}
+          <div class="message is-warning">
+            <div class="message-body">
+              Please confirm the second transaction in the TezBridge window.
+            </div>
+          </div>
+        {/if}
+        {#if secondTx}
+          <div class="message is-info">
+            <div class="message-body">Saving your token, please wait...</div>
+          </div>
+        {/if}
       </section>
       <footer class="modal-card-foot" style="justify-content:flex-end">
         <button
@@ -207,8 +250,7 @@
                 <div class="box">
                   <div class="title is-5">Give a name to your token</div>
                   <div class="subtitle is-6">
-                    Choose a unique short easy-to-remember name to identify your
-                    token:
+                    Choose a unique short name to identify your token:
                   </div>
                   <input
                     type="text"

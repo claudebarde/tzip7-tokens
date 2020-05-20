@@ -1,5 +1,5 @@
 type param = (string, string, address);
-type token = { name: string, symbol: string, address: address, owner: address };
+type token = { name: string, symbol: string, address: address, owner: address, createdOn: timestamp };
 
 type storage = {
   tokensList: set (string),
@@ -16,7 +16,7 @@ let main = ((param,storage): (param, storage)) => {
     } else {
       // creates new token
       let newToken: token = 
-        { name: param[0], symbol: param[1], address: param[2], owner: Tezos.source };
+        { name: param[0], symbol: param[1], address: param[2], owner: Tezos.source, createdOn: Tezos.now };
       // adds token to tokens big map
       let newTokensMap = switch(Big_map.find_opt(param[1], storage.tokens)) {
         | Some (n) => failwith ("TokenAlreadyExists"): big_map (string, token)
