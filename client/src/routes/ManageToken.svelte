@@ -138,7 +138,9 @@
       {:else if isAllowed}
         <section class="section">
           <div class="container">
-            <p class="title is-3">Manage your token - {tokenSymbol}</p>
+            <p class="title is-3 has-text-centered">
+              Manage your token - {tokenSymbol}
+            </p>
             <TokenInfo
               {tokenSymbol}
               tokenStorage={$store.tokenStorage}
@@ -151,7 +153,10 @@
                   }} />
               </div>
               <div class="column is-two-fifths">
-                <SupplyPool />
+                <SupplyPool
+                  on:updateUserBalance={event => {
+                    ownerBalance -= event.detail;
+                  }} />
               </div>
             </div>
           </div>

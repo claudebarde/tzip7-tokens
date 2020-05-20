@@ -41,7 +41,8 @@
         <div class="column is-half has-text-right">
           {#if tokenStorage}
             <p class="subtitle is-6">
-              {tokenStorage.tokenBuyPool.toLocaleString('en-US')} {tokenSymbol}
+              {tokenStorage.tokenBuyPool.toNumber().toLocaleString('en-US')}
+              {tokenSymbol}
             </p>
           {:else}Unavailable{/if}
         </div>
