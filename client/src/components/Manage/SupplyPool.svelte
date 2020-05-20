@@ -35,14 +35,12 @@
 <style>
   .bottom-buttons {
     padding-top: 20px;
-    position: absolute;
-    bottom: 1.25rem;
-    right: 1.25rem;
+    display: flex;
+    justify-content: flex-end;
   }
 
   .box {
     height: 100%;
-    position: relative;
   }
 </style>
 

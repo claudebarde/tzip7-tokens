@@ -4,6 +4,7 @@
   import MintTokens from "../components/Manage/MintTokens.svelte";
   import SupplyPool from "../components/Manage/SupplyPool.svelte";
   import TokenInfo from "../components/Manage/TokenInfo.svelte";
+  import SetBuyPrice from "../components/Manage/SetBuyPrice.svelte";
   import store from "../store";
 
   export let params = {};
@@ -158,6 +159,18 @@
                     ownerBalance -= event.detail;
                   }} />
               </div>
+            </div>
+            <div class="columns is-centered">
+              <div class="column is-two-fifths">
+                <SetBuyPrice />
+              </div>
+              <div class="column is-two-fifths">
+                Approve third-party account
+              </div>
+            </div>
+            <div class="columns is-centered">
+              <div class="column is-two-fifths">Remove approval</div>
+              <div class="column is-two-fifths">Burn tokens</div>
             </div>
           </div>
         </section>

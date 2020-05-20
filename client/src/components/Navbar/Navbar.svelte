@@ -56,6 +56,7 @@
     border-right: solid 1px grey;
     padding: 70px 0px;
     position: fixed;
+    z-index: 100;
   }
 
   .navigation-element {

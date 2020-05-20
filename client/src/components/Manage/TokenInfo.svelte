@@ -5,7 +5,7 @@
 <div class="columns is-centered">
   <div class="column is-two-fifths">
     <div class="box">
-      <div class="columns">
+      <div class="columns is-mobile">
         <div class="column is-half has-text-left">
           <p class="title is-6">Total Supply:</p>
         </div>
@@ -18,7 +18,7 @@
           {:else}Unavailable{/if}
         </div>
       </div>
-      <div class="columns">
+      <div class="columns is-mobile">
         <div class="column is-half has-text-left">
           <p class="title is-6">Account Balance:</p>
         </div>
@@ -34,7 +34,7 @@
           {:else}Unavailable{/if}
         </div>
       </div>
-      <div class="columns">
+      <div class="columns is-mobile">
         <div class="column is-half has-text-left">
           <p class="title is-6">Supply Pool:</p>
         </div>
@@ -51,17 +51,17 @@
   </div>
   <div class="column is-two-fifths">
     <div class="box">
-      <div class="columns">
+      <div class="columns is-mobile">
         <div class="column is-half has-text-left">
           <p class="title is-6">Buy Price:</p>
         </div>
         <div class="column is-half has-text-right">
           {#if tokenStorage}
-            <p class="subtitle is-6">{tokenStorage.buyPrice} {tokenSymbol}</p>
+            <p class="subtitle is-6">{tokenStorage.buyPrice / 1000000} XTZ</p>
           {:else}Unavailable{/if}
         </div>
       </div>
-      <div class="columns">
+      <div class="columns is-mobile">
         <div class="column is-half has-text-left">
           <p class="title is-6">Number of decimals:</p>
         </div>
@@ -71,7 +71,7 @@
           {:else}Unavailable{/if}
         </div>
       </div>
-      <div class="columns">
+      <div class="columns is-mobile">
         <div class="column is-half has-text-left">
           <p class="title is-6">Contract paused:</p>
         </div>
