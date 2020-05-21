@@ -7,6 +7,7 @@
   import SetBuyPrice from "../components/Manage/SetBuyPrice.svelte";
   import Approve from "../components/Manage/Approve.svelte";
   import RemoveApproval from "../components/Manage/RemoveApproval.svelte";
+  import BurnTokens from "../components/Manage/BurnTokens.svelte";
   import store from "../store";
 
   export let params = {};
@@ -156,8 +157,13 @@
       {:else if isAllowed}
         <section class="section">
           <div class="container">
-            <p class="title is-3 has-text-centered">
+            <p class="title is-3 has-text-centered is-hidden-mobile">
               Manage your token - {tokenSymbol}
+            </p>
+            <p class="title is-3 has-text-centered is-hidden-desktop">
+              Manage your token
+              <br />
+              {tokenSymbol}
             </p>
             <TokenInfo
               {tokenSymbol}
@@ -189,7 +195,13 @@
               <div class="column is-two-fifths">
                 <RemoveApproval />
               </div>
-              <div class="column is-two-fifths">Burn tokens</div>
+              <div class="column is-two-fifths">
+                <BurnTokens
+                  userBalance={ownerBalance}
+                  on:updateUserBalance={event => {
+                    ownerBalance -= event.detail;
+                  }} />
+              </div>
             </div>
           </div>
         </section>

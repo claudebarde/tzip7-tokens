@@ -30,13 +30,28 @@
 
 <style>
   .bottom-buttons {
-    padding-top: 20px;
+    padding-top: 10px;
     display: flex;
     justify-content: flex-end;
   }
 
   .box {
     height: 100%;
+    position: relative;
+  }
+
+  .bottom-div {
+    position: absolute;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    width: 90%;
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .bottom-div {
+      position: initial;
+      width: 100%;
+    }
   }
 </style>
 
@@ -47,7 +62,12 @@
     order to acquire more of your tokens.
   </p>
   <br />
-  <div>
+  <p>
+    The tokens in the supply pool will be available for purchase at the price
+    you will set.
+  </p>
+  <br />
+  <div class="bottom-div">
     <div class="field">
       <label for="setPrice">Which price do you want to set?</label>
       <p class="control has-icons-left">
@@ -68,14 +88,14 @@
         An error has occured, please try again.
       </p>
     {/if}
-  </div>
-  <div class="bottom-buttons">
-    <button
-      class="button is-info"
-      class:is-loading={settingPrice}
-      on:click={setPrice}
-      disabled={!price}>
-      Set Price
-    </button>
+    <div class="bottom-buttons">
+      <button
+        class="button is-info"
+        class:is-loading={settingPrice}
+        on:click={setPrice}
+        disabled={!price}>
+        Set Price
+      </button>
+    </div>
   </div>
 </div>

@@ -69,9 +69,7 @@
   <p>This address won't be able to spend your tokens anymore.</p>
   <br />
   <div>
-    <label for="setPrice">
-      Which address do you want to remove from your approved spenders?
-    </label>
+    <label for="setPrice">Which address do you want to remove?</label>
     <input
       id="setPrice"
       class="input"
