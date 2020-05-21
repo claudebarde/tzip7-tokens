@@ -1,17 +1,43 @@
 <script>
   import { afterUpdate } from "svelte";
   import store from "../../store";
+  import ChevronDown from "../../icons/ChevronDown.svelte";
+
+  export let removedApproval;
 
   let approveError = false;
   let approving = false;
   let addressToApprove = "";
   let amountToApprove = "";
   let openApprovedAddresses = false;
-  let approvedAddresses = {};
+  let checkedAllowances = false;
+
+  $: if (!!removedApproval) {
+    console.log("approval removed for:", removedApproval);
+    checkAllowances();
+  }
 
   const formatValue = event => {
     amountToApprove = parseInt(event.target.value);
     approveError = false;
+  };
+
+  const checkAllowances = async () => {
+    let approvedAddresses = {};
+    try {
+      const account = await $store.tokenStorage.ledger.get($store.userAddress);
+      if (account) {
+        account.allowances.forEach(
+          (value, key) => (approvedAddresses[key] = value)
+        );
+        store.updateApprovedAddresses(approvedAddresses);
+      } else {
+        throw "No account found";
+      }
+    } catch (error) {
+      console.log(error);
+      store.updateApprovedAddresses({});
+    }
   };
 
   const approve = async () => {
@@ -25,6 +51,7 @@
       addressToApprove = "";
       amountToApprove = "";
       store.updateTokenStorage(await $store.tokenInstance.storage());
+      checkAllowances();
     } catch (error) {
       console.log(error);
       approving = false;
@@ -33,11 +60,9 @@
   };
 
   afterUpdate(async () => {
-    if ($store.tokenStorage) {
-      const account = await $store.tokenStorage.ledger.get($store.userAddress);
-      account.allowances.forEach(
-        (value, key) => (approvedAddresses[key] = value)
-      );
+    if ($store.tokenStorage && !checkedAllowances) {
+      checkedAllowances = true;
+      await checkAllowances();
     }
   });
 </script>
@@ -51,6 +76,10 @@
 
   .box {
     height: 100%;
+  }
+
+  span.icon svg {
+    width: 20px;
   }
 </style>
 
@@ -97,17 +126,21 @@
           aria-haspopup="true"
           aria-controls="approved-addresses"
           on:click={() => (openApprovedAddresses = !openApprovedAddresses)}>
-          <span>Approved addresses</span>
-          <span class="icon is-small">
-            <i class="fas fa-angle-down" aria-hidden="true" />
-          </span>
+          {#if Object.keys($store.approvedAddresses).length > 0}
+            <span>Approved addresses</span>
+            <span class="icon">
+              <ChevronDown width="20" />
+            </span>
+          {:else}
+            <span>No approved address</span>
+          {/if}
         </button>
       </div>
       <div class="dropdown-menu" id="approved-addresses" role="menu">
         <div class="dropdown-content">
-          {#each Object.keys(approvedAddresses) as address}
+          {#each Object.keys($store.approvedAddresses) as address}
             <p class="dropdown-item">
-              {address.slice(0, 7) + '...' + address.slice(-7)} ({approvedAddresses[address].toNumber()})
+              {address.slice(0, 7) + '...' + address.slice(-7)} ({$store.approvedAddresses[address].toNumber()})
             </p>
           {/each}
         </div>

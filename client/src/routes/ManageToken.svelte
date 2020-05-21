@@ -6,18 +6,20 @@
   import TokenInfo from "../components/Manage/TokenInfo.svelte";
   import SetBuyPrice from "../components/Manage/SetBuyPrice.svelte";
   import Approve from "../components/Manage/Approve.svelte";
+  import RemoveApproval from "../components/Manage/RemoveApproval.svelte";
   import store from "../store";
 
   export let params = {};
 
   let token = undefined;
   let tokenSymbol = undefined;
-  let ownerBalance = undefined;
+  let ownerBalance = 0;
   let tokensSuggestions = [];
   let searchValue = "";
   let noSuggestion = false;
   let isAllowed = undefined;
   let isUnknown = false;
+  let removedApproval = undefined;
 
   const searchTokens = event => {
     const input = event.target.value.trim().toUpperCase();
@@ -60,10 +62,24 @@
         token = _token;
         const tokenInstance = await $store.Tezos.contract.at(_token.address);
         store.updateTokenInstance(tokenInstance);
+        // token storage
         const tokenStorage = await tokenInstance.storage();
         store.updateTokenStorage(tokenStorage);
-        ownerBalance =
-          (await tokenStorage.ledger.get(_token.owner)).balance.toNumber() || 0;
+
+        const account = await tokenStorage.ledger.get($store.userAddress);
+        if (account) {
+          // user's balance
+          ownerBalance = account.balance.toNumber();
+          // user's allowed spenders
+          const approvedAddresses = {};
+          account.allowances.forEach(
+            (value, key) => (approvedAddresses[key] = value)
+          );
+          store.updateApprovedAddresses(approvedAddresses);
+        } else {
+          ownerBalance = 0;
+          store.updateApprovedAddresses({});
+        }
       } catch (error) {
         if (error === "UnknownToken") {
           isUnknown = true;
@@ -170,7 +186,9 @@
               </div>
             </div>
             <div class="columns is-centered">
-              <div class="column is-two-fifths">Remove approval</div>
+              <div class="column is-two-fifths">
+                <RemoveApproval />
+              </div>
               <div class="column is-two-fifths">Burn tokens</div>
             </div>
           </div>

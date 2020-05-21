@@ -48,16 +48,21 @@
   </p>
   <br />
   <div>
-    <label for="setPrice">Which price do you want to set?</label>
-    <input
-      id="setPrice"
-      class="input"
-      class:is-danger={priceError}
-      type="number"
-      placeholder="Price in XTZ"
-      on:input={formatValue}
-      value={price}
-      disabled={settingPrice} />
+    <div class="field">
+      <label for="setPrice">Which price do you want to set?</label>
+      <p class="control has-icons-left">
+        <input
+          id="setPrice"
+          class="input"
+          class:is-danger={priceError}
+          type="number"
+          placeholder="Price in XTZ"
+          on:input={formatValue}
+          value={price}
+          disabled={settingPrice} />
+        <span class="icon is-small is-left">ꜩ</span>
+      </p>
+    </div>
     {#if priceError}
       <p class="is-size-7 has-text-right has-text-danger">
         An error has occured, please try again.
