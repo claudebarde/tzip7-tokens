@@ -135,10 +135,13 @@
               </div>
             </div>
             <div class="columns is-centered">
+              <div class="column is-two-fifths">Buy tokens</div>
               <div class="column is-two-fifths">
                 <RemoveApproval />
               </div>
-              <div class="column is-two-fifths">
+            </div>
+            <div class="columns is-centered">
+              <div class="column is-four-fifths">
                 <TransactionsHistory />
               </div>
             </div>
