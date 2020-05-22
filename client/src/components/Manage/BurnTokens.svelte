@@ -23,7 +23,10 @@
       burning = false;
       dispatch("updateUserBalance", tokensToBurn);
       tokensToBurn = "";
-      store.updateTokenStorage(await $store.tokenInstance.storage());
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
+        ...(await $store.tokenInstance.storage())
+      });
     } catch (error) {
       console.log(error);
       burningError = true;

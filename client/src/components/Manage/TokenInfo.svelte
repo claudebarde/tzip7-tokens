@@ -1,5 +1,5 @@
 <script>
-  export let tokenSymbol, tokenStorage, userBalance;
+  export let tokenStorage, userBalance;
 </script>
 
 <div class="columns is-centered">
@@ -13,7 +13,7 @@
           {#if tokenStorage}
             <p class="subtitle is-6">
               {tokenStorage.totalSupply.toNumber().toLocaleString('en-US')}
-              {tokenSymbol}
+              {tokenStorage.metadata.symbol}
             </p>
           {:else}Unavailable{/if}
         </div>
@@ -28,7 +28,8 @@
               Loading...
             {:else}
               <p class="subtitle is-6">
-                {userBalance.toLocaleString('en-US')} {tokenSymbol}
+                {userBalance.toLocaleString('en-US')}
+                {tokenStorage.metadata.symbol}
               </p>
             {/if}
           {:else}Unavailable{/if}
@@ -42,7 +43,24 @@
           {#if tokenStorage}
             <p class="subtitle is-6">
               {tokenStorage.tokenBuyPool.toNumber().toLocaleString('en-US')}
-              {tokenSymbol}
+              {tokenStorage.metadata.symbol}
+            </p>
+          {:else}Unavailable{/if}
+        </div>
+      </div>
+      <div class="columns is-mobile">
+        <div class="column is-half has-text-left">
+          <p class="title is-6">Owner:</p>
+        </div>
+        <div class="column is-half has-text-right">
+          {#if tokenStorage}
+            <p class="subtitle is-6">
+              <a
+                href={`https://carthage.tzkt.io/${tokenStorage.owner}/operations`}
+                target="_blank"
+                rel="noreferrer noopener">
+                {tokenStorage.owner.slice(0, 7) + '...' + tokenStorage.owner.slice(-7)}
+              </a>
             </p>
           {:else}Unavailable{/if}
         </div>
@@ -73,11 +91,28 @@
       </div>
       <div class="columns is-mobile">
         <div class="column is-half has-text-left">
-          <p class="title is-6">Contract paused:</p>
+          <p class="title is-6">Token paused:</p>
         </div>
         <div class="column is-half has-text-right">
           {#if tokenStorage}
             <p class="subtitle is-6">{tokenStorage.paused ? 'Yes' : 'No'}</p>
+          {:else}Unavailable{/if}
+        </div>
+      </div>
+      <div class="columns is-mobile">
+        <div class="column is-half has-text-left">
+          <p class="title is-6">Address:</p>
+        </div>
+        <div class="column is-half has-text-right">
+          {#if tokenStorage}
+            <p class="subtitle is-6">
+              <a
+                href={`https://carthage.tzkt.io/${tokenStorage.address}/operations`}
+                target="_blank"
+                rel="noreferrer noopener">
+                {tokenStorage.address.slice(0, 7) + '...' + tokenStorage.address.slice(-7)}
+              </a>
+            </p>
           {:else}Unavailable{/if}
         </div>
       </div>

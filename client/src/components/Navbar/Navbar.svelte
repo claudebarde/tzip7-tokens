@@ -7,12 +7,14 @@
   import Find from "../../icons/Find.svelte";
   import XCircle from "../../icons/XCircle.svelte";
   import User from "../../icons/User.svelte";
+  import Coins from "../../icons/Coins.svelte";
   import store from "../../store.js";
 
   let walletIconHover = false;
   let homeIconHover = false;
   let createIconHover = false;
   let manageIconHover = false;
+  let coinIconHover = false;
   let findIconHover = false;
   let tezbridgeSigner = undefined;
 
@@ -143,6 +145,22 @@
       Manage
     </span>
   </div>
+  {#if $store.tokenStorage}
+    <div
+      class="navigation-element"
+      on:click={() => push(`/view/${$store.tokenStorage.symbol}`)}
+      on:mouseenter={() => (coinIconHover = true)}
+      on:mouseleave={() => (coinIconHover = false)}>
+      <div class="image navigation-icon">
+        <Coins
+          color={$location.includes('/view') ? 'white' : coinIconHover ? '#333' : '#B5B5B5'} />
+      </div>
+      <span
+        class={$location.includes('/view') ? 'has-text-white' : coinIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+        {$store.tokenStorage.symbol}
+      </span>
+    </div>
+  {/if}
   <br />
   <div
     class="navigation-element"

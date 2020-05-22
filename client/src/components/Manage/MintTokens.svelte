@@ -21,7 +21,10 @@
       minting = false;
       dispatch("updateUserBalance", tokensToMint);
       tokensToMint = "";
-      store.updateTokenStorage(await $store.tokenInstance.storage());
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
+        ...(await $store.tokenInstance.storage())
+      });
     } catch (error) {
       console.log(error);
       mintingError = true;

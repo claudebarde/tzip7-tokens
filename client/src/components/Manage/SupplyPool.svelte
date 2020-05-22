@@ -23,7 +23,10 @@
       supplying = false;
       dispatch("updateUserBalance", tokensToSupply);
       tokensToSupply = "";
-      store.updateTokenStorage(await $store.tokenInstance.storage());
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
+        ...(await $store.tokenInstance.storage())
+      });
     } catch (error) {
       console.log(error);
       supplyError = true;
@@ -64,7 +67,7 @@
       class="input"
       class:is-danger={supplyError}
       type="number"
-      placeholder="Amount of tokens to mint"
+      placeholder="Amount of tokens to transfer to the supply pool"
       on:input={formatValue}
       value={tokensToSupply}
       disabled={supplying} />

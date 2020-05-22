@@ -41,10 +41,21 @@
     }
   };
 
+  $: if ($store.userAddress && $store.tokenStorage) {
+    // if user was not logged in, this will check if he can manage the token
+    if ($store.tokenStorage.owner === $store.userAddress) {
+      isAllowed = true;
+    } else {
+      isAllowed = false;
+    }
+  }
+
   onMount(() => {
     if (params.tokenSymbol) {
       tokenSymbol = params.tokenSymbol;
     }
+    store.updateTokenStorage(undefined);
+    store.updateTokenInstance(undefined);
   });
 
   afterUpdate(async () => {
@@ -65,7 +76,7 @@
         store.updateTokenInstance(tokenInstance);
         // token storage
         const tokenStorage = await tokenInstance.storage();
-        store.updateTokenStorage(tokenStorage);
+        store.updateTokenStorage({ ...tokenStorage, ..._token });
 
         const account = await tokenStorage.ledger.get($store.userAddress);
         if (account) {
@@ -166,7 +177,6 @@
               {tokenSymbol}
             </p>
             <TokenInfo
-              {tokenSymbol}
               tokenStorage={$store.tokenStorage}
               userBalance={ownerBalance} />
             <div class="columns is-centered">
@@ -211,7 +221,7 @@
           <section class="section">
             <div class="container">
               {#if !$store.userAddress}
-                Please log in to identify yourself
+                Please connect your wallet to identify yourself
               {:else}You are not allowed to manage this token{/if}
             </div>
           </section>

@@ -50,7 +50,10 @@
       approving = false;
       addressToApprove = "";
       amountToApprove = "";
-      store.updateTokenStorage(await $store.tokenInstance.storage());
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
+        ...(await $store.tokenInstance.storage())
+      });
       checkAllowances();
     } catch (error) {
       console.log(error);
@@ -91,7 +94,7 @@
   </p>
   <br />
   <div>
-    <label for="addressToApprove">Which address do you want to allow?</label>
+    <label for="addressToApprove">Which address do you want to approve?</label>
     <input
       id="addressToApprove"
       class="input"
@@ -102,7 +105,7 @@
       disabled={approving} />
     <br />
     <br />
-    <label for="amountToApprove">Which amount do you want to allow?</label>
+    <label for="amountToApprove">Which amount do you want to approve?</label>
     <input
       id="amountToApprove"
       class="input"
@@ -125,7 +128,8 @@
           class="button"
           aria-haspopup="true"
           aria-controls="approved-addresses"
-          on:click={() => (openApprovedAddresses = !openApprovedAddresses)}>
+          on:focus={() => (openApprovedAddresses = true)}
+          on:blur={() => (openApprovedAddresses = false)}>
           {#if Object.keys($store.approvedAddresses).length > 0}
             <span>Approved addresses</span>
             <span class="icon">

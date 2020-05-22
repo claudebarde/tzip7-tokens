@@ -19,7 +19,10 @@
       await op.confirmation();
       settingPrice = false;
       price = "";
-      store.updateTokenStorage(await $store.tokenInstance.storage());
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
+        ...(await $store.tokenInstance.storage())
+      });
     } catch (error) {
       console.log(error);
       settingPrice = false;
@@ -44,7 +47,7 @@
     position: absolute;
     bottom: 1.25rem;
     right: 1.25rem;
-    width: 90%;
+    width: 92%;
   }
 
   @media only screen and (max-width: 1024px) {

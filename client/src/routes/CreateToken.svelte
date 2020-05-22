@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import { MichelsonMap } from "@taquito/taquito";
   import { push } from "svelte-spa-router";
   import Navbar from "../components/Navbar/Navbar.svelte";
@@ -99,6 +100,11 @@
       creatingNewToken = false;
     }
   };
+
+  onMount(() => {
+    store.updateTokenInstance(undefined);
+    store.updateTokenStorage(undefined);
+  });
 </script>
 
 <style>

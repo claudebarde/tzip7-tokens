@@ -1,0 +1,77 @@
+<script>
+  import store from "../../store";
+
+  let recipient = "";
+  let amount = "";
+  let transferError = false;
+  let transferring = false;
+
+  const formatValue = event => {
+    amount = parseInt(event.target.value);
+    transferError = false;
+  };
+
+  const transfer = () => {
+    // transfer tokens
+  };
+</script>
+
+<style>
+  .bottom-buttons {
+    padding-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .box {
+    height: 100%;
+  }
+</style>
+
+<div class="box">
+  <p class="title is-6">Transfer tokens</p>
+  <p>
+    You can transfer tokens from your account to another account by using its
+    Tezos address.
+  </p>
+  <br />
+  <div>
+    <label for="addressToApprove">
+      Which address do you want to send tokens to?
+    </label>
+    <input
+      id="addressToApprove"
+      class="input"
+      class:is-danger={transferError}
+      type="text"
+      placeholder="Valid address"
+      bind:value={recipient}
+      disabled={transferring} />
+    <br />
+    <br />
+    <label for="amountToApprove">Which amount do you want to send?</label>
+    <input
+      id="amountToApprove"
+      class="input"
+      class:is-danger={transferError}
+      type="number"
+      placeholder={`Amount of ${$store.tokenStorage.symbol} tokens`}
+      on:input={formatValue}
+      value={amount}
+      disabled={transferring} />
+    {#if transferError}
+      <p class="is-size-7 has-text-right has-text-danger">
+        An error has occured, please try again.
+      </p>
+    {/if}
+  </div>
+  <div class="bottom-buttons">
+    <button
+      class="button is-info"
+      class:is-loading={transferring}
+      on:click={transfer}
+      disabled={!recipient}>
+      Transfer
+    </button>
+  </div>
+</div>

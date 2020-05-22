@@ -4,6 +4,7 @@
   let removeError = false;
   let removing = false;
   let address = "";
+  let dropdownWithAddresses = false;
 
   const formatValue = event => {
     address = event.target.value;
@@ -35,7 +36,10 @@
         .removeApproval(address)
         .send();
       await op.confirmation();
-      store.updateTokenStorage(await $store.tokenInstance.storage());
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
+        ...(await $store.tokenInstance.storage())
+      });
       checkAllowances();
 
       address = "";
@@ -66,19 +70,46 @@
     After approving an address for spending your tokens on your behalf, you can
     remove your approval.
   </p>
-  <p>This address won't be able to spend your tokens anymore.</p>
+  <p>
+    Once the removal has been approved, this address won't be able to spend your
+    tokens anymore.
+  </p>
   <br />
   <div>
     <label for="setPrice">Which address do you want to remove?</label>
-    <input
-      id="setPrice"
-      class="input"
-      class:is-danger={removeError}
-      type="text"
-      placeholder="Tezos Address"
-      on:input={formatValue}
-      value={address}
-      disabled={removing} />
+    <div
+      class="dropdown"
+      class:is-active={dropdownWithAddresses}
+      style="width: 100%">
+      <div class="dropdown-trigger" style="width: 100%">
+        <input
+          id="setPrice"
+          class="input"
+          class:is-danger={removeError}
+          type="text"
+          placeholder="Tezos Address"
+          on:input={formatValue}
+          on:focus={() => (dropdownWithAddresses = true)}
+          on:blur={() => setTimeout(() => (dropdownWithAddresses = false), 100)}
+          value={address}
+          disabled={removing} />
+      </div>
+      <div class="dropdown-menu" role="menu">
+        <div class="dropdown-content">
+          {#each Object.keys($store.approvedAddresses) as approvedAddress}
+            <a
+              href="#/"
+              class="dropdown-item"
+              on:click|preventDefault={() => (address = approvedAddress)}>
+              {approvedAddress.slice(0, 7) + '...' + approvedAddress.slice(-7)}
+            </a>
+          {:else}
+            <p class="dropdown-item">No address to remove</p>
+          {/each}
+        </div>
+      </div>
+    </div>
+
     {#if removeError}
       <p class="is-size-7 has-text-right has-text-danger">
         An error has occured, please try again.
