@@ -8,18 +8,16 @@
   .box {
     height: 100%;
   }
-
-  @media only screen and (max-width: 1024px) {
-    .table-box {
-      max-height: 100%;
-    }
-  }
 </style>
 
 <div class="box">
-  <p class="title is-6">Transfers History</p>
+  <p class="title is-6">Activity History</p>
   <p>
-    You can find below your latest transfers with {$store.tokenStorage.metadata.symbol}.
+    You can find below your latest activity with {$store.tokenStorage.metadata.symbol}.
+  </p>
+  <p class="is-size-7">
+    Your activity is saved locally, if you use your account on another device,
+    that activity won't appear here.
   </p>
   <br />
   {#if $store.transactionsHistory.length === 0}
@@ -37,10 +35,16 @@
         {#each $store.transactionsHistory as tx}
           <tr class="is-hidden-mobile">
             <td>
-              <p>
-                Transferred {tx.amount.toLocaleString('en-US')} {$store.tokenStorage.metadata.symbol}
-                to {tx.recipient.slice(0, 7) + '...' + tx.recipient.slice(-7)}
-              </p>
+              {#if tx.type === 'transfer'}
+                <p>
+                  Transferred {tx.amount.toLocaleString('en-US')} {$store.tokenStorage.metadata.symbol}
+                  to {tx.recipient.slice(0, 7) + '...' + tx.recipient.slice(-7)}
+                </p>
+              {:else if tx.type === 'buy'}
+                <p>
+                  Bought {tx.amount.toLocaleString('en-US')} {$store.tokenStorage.metadata.symbol}
+                </p>
+              {/if}
             </td>
             <td>
               <p>{moment(tx.timestamp).format('MMMM Do YYYY, h:mm:ss a')}</p>
@@ -59,10 +63,16 @@
           </tr>
           <tr class="is-hidden-desktop">
             <td>
-              <p>
-                Transferred {tx.amount.toLocaleString('en-US')} {$store.tokenStorage.metadata.symbol}
-                to {tx.recipient.slice(0, 7) + '...' + tx.recipient.slice(-7)}
-              </p>
+              {#if tx.type === 'transfer'}
+                <p>
+                  Transferred {tx.amount.toLocaleString('en-US')} {$store.tokenStorage.metadata.symbol}
+                  to {tx.recipient.slice(0, 7) + '...' + tx.recipient.slice(-7)}
+                </p>
+              {:else if tx.type === 'buy'}
+                <p>
+                  Bought {tx.amount.toLocaleString('en-US')} {$store.tokenStorage.metadata.symbol}
+                </p>
+              {/if}
               <p>{moment(tx.timestamp).format('MMMM Do YYYY, h:mm:ss a')}</p>
               <p>
                 <a

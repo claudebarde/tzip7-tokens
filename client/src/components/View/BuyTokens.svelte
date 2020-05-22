@@ -1,38 +1,37 @@
 <script>
   import store from "../../store";
 
-  let recipient = "";
   let amount = "";
-  let notEnoughFunds = false;
-  let transferError = false;
-  let transferring = false;
+  let buyError = false;
+  let buying = false;
+  let exceedSupplyPool = false;
 
   const formatValue = event => {
-    amount = parseInt(event.target.value);
-    transferError = false;
-    if (amount > $store.userBalance) {
-      notEnoughFunds = true;
+    let value = event.target.value.trim();
+    if (value) {
+      amount = parseInt(value);
+      exceedSupplyPool = amount > $store.tokenStorage.tokenBuyPool.toNumber();
     } else {
-      notEnoughFunds = false;
+      amount = "";
     }
+    buyError = false;
   };
 
   const transfer = async () => {
     // transfer tokens
-    transferError = false;
-    transferring = true;
+    buyError = false;
+    buying = true;
     try {
       const op = await $store.tokenInstance.methods
-        .transfer($store.userAddress, recipient, amount)
-        .send();
+        .buy(amount)
+        .send({ amount: amount * $store.tokenStorage.buyPrice, mutez: true });
       await op.confirmation();
       if (window.localStorage) {
         const txHistoryItem = `${$store.tokenStorage.metadata.symbol}txsHistory`;
         // saves transaction in local storage
         const newTx = {
-          type: "transfer",
+          type: "buy",
           txHash: op.hash,
-          recipient,
           amount,
           timestamp: Date.now()
         };
@@ -47,13 +46,17 @@
       }
       // updates user's balance
       store.updateUserBalance($store.userBalance - amount);
-      recipient = "";
+      // gets new storage
+      store.updateContractStorage({
+        ...$store.contractStorage,
+        ...(await $store.tokenInstance.storage())
+      });
       amount = "";
-      transferring = false;
+      buying = false;
     } catch (error) {
       console.log(error);
-      transferError = true;
-      transferring = false;
+      buyError = true;
+      buying = false;
     }
   };
 </script>
@@ -62,7 +65,7 @@
   .bottom-buttons {
     padding-top: 20px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
 
   .box {
@@ -71,49 +74,44 @@
 </style>
 
 <div class="box">
-  <p class="title is-6">Transfer tokens</p>
+  <p class="title is-6">Buy tokens</p>
+  <p>Tokens in the supply pool are available for purchase.</p>
   <p>
-    You can transfer tokens from your account to another account by using its
-    Tezos address.
+    The amount in XTZ to be paid for the purchase will be automatically
+    calculated according to the current buy price.
   </p>
   <br />
   <div>
-    <label for="addressToApprove">
-      Which address do you want to send tokens to?
-    </label>
+    <label for="buyTokens">How many tokens do you want to buy?</label>
     <input
-      id="addressToApprove"
+      id="buyTokens"
       class="input"
-      class:is-danger={transferError}
-      type="text"
-      placeholder="Valid address"
-      bind:value={recipient}
-      disabled={transferring} />
-    <br />
-    <br />
-    <label for="amountToApprove">Which amount do you want to send?</label>
-    <input
-      id="amountToApprove"
-      class="input"
-      class:is-danger={transferError || notEnoughFunds}
+      class:is-danger={buyError || exceedSupplyPool}
       type="number"
       placeholder={`Amount of ${$store.tokenStorage.symbol} tokens`}
       on:input={formatValue}
       value={amount}
-      disabled={transferring} />
-    {#if transferError}
+      disabled={buying} />
+    {#if buyError}
       <p class="is-size-7 has-text-right has-text-danger">
         An error has occured, please try again.
       </p>
     {/if}
   </div>
   <div class="bottom-buttons">
+    <button class="button is-static">
+      {#if exceedSupplyPool}
+        Not Enough Tokens
+      {:else}
+        {amount || 0} token{amount > 1 ? 's' : ''} for ꜩ {(amount * $store.tokenStorage.buyPrice) / 1000000}
+      {/if}
+    </button>
     <button
-      class="button is-info"
-      class:is-loading={transferring}
+      class="button is-success"
+      class:is-loading={buying}
       on:click={transfer}
-      disabled={!recipient && !amount}>
-      Transfer
+      disabled={!amount || exceedSupplyPool}>
+      Buy
     </button>
   </div>
 </div>

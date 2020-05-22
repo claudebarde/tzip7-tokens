@@ -6,6 +6,7 @@
   import RemoveApproval from "../components/Manage/RemoveApproval.svelte";
   import Transfer from "../components/View/Transfer.svelte";
   import TransactionsHistory from "../components/View/TransactionsHistory.svelte";
+  import BuyTokens from "../components/View/BuyTokens.svelte";
   import store from "../store";
 
   export let params;
@@ -135,7 +136,9 @@
               </div>
             </div>
             <div class="columns is-centered">
-              <div class="column is-two-fifths">Buy tokens</div>
+              <div class="column is-two-fifths">
+                <BuyTokens />
+              </div>
               <div class="column is-two-fifths">
                 <RemoveApproval />
               </div>

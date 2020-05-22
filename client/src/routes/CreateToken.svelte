@@ -256,7 +256,8 @@
                 <div class="box">
                   <div class="title is-5">Give a name to your token</div>
                   <div class="subtitle is-6">
-                    Choose a unique short name to identify your token:
+                    Choose a unique short name to identify your token with a
+                    maximum of 14 characters:
                   </div>
                   <input
                     type="text"
@@ -273,7 +274,8 @@
                 <div class="box">
                   <div class="title is-5">Choose a symbol</div>
                   <div class="subtitle is-6">
-                    The symbol must be short, maximum 5 characters and unique:
+                    The symbol must maximum 5 characters and unique, made of
+                    letters from the name:
                   </div>
                   <input
                     type="text"
@@ -283,15 +285,17 @@
                     value={tokenSymbol}
                     on:input={updateTokenSymbol}
                     maxlength="5"
-                    placeholder="Your token symbol, for example MYTEZ" />
+                    placeholder="For example MYTEZ" />
                 </div>
               </div>
               <div class="column is-one-third-desktop is-half-tablet">
                 <div class="box">
                   <div class="title is-5">Choose a decimal value</div>
                   <div class="subtitle is-6">
-                    Is your token divisible? How many decimals do you want to
-                    allow?
+                    <!--Is your token divisible? How many decimals do you want to
+                    allow?-->
+                    This will only affect the display of your token if you allow
+                    subdivisions (like cents for dollars):
                   </div>
                   <input
                     type="number"
