@@ -1,5 +1,5 @@
 <script>
-  export let tokenStorage, userBalance;
+  import store from "../../store";
 </script>
 
 <div class="columns is-centered">
@@ -10,10 +10,12 @@
           <p class="title is-6">Total Supply:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
+          {#if $store.tokenStorage}
             <p class="subtitle is-6">
-              {tokenStorage.totalSupply.toNumber().toLocaleString('en-US')}
-              {tokenStorage.metadata.symbol}
+              {$store.tokenStorage.totalSupply
+                .toNumber()
+                .toLocaleString('en-US')}
+              {$store.tokenStorage.metadata.symbol}
             </p>
           {:else}Unavailable{/if}
         </div>
@@ -23,13 +25,13 @@
           <p class="title is-6">Account Balance:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
-            {#if userBalance === undefined}
+          {#if $store.tokenStorage}
+            {#if $store.userBalance === undefined}
               Loading...
             {:else}
               <p class="subtitle is-6">
-                {userBalance.toLocaleString('en-US')}
-                {tokenStorage.metadata.symbol}
+                {$store.userBalance.toLocaleString('en-US')}
+                {$store.tokenStorage.metadata.symbol}
               </p>
             {/if}
           {:else}Unavailable{/if}
@@ -40,10 +42,12 @@
           <p class="title is-6">Supply Pool:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
+          {#if $store.tokenStorage}
             <p class="subtitle is-6">
-              {tokenStorage.tokenBuyPool.toNumber().toLocaleString('en-US')}
-              {tokenStorage.metadata.symbol}
+              {$store.tokenStorage.tokenBuyPool
+                .toNumber()
+                .toLocaleString('en-US')}
+              {$store.tokenStorage.metadata.symbol}
             </p>
           {:else}Unavailable{/if}
         </div>
@@ -53,13 +57,13 @@
           <p class="title is-6">Owner:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
+          {#if $store.tokenStorage}
             <p class="subtitle is-6">
               <a
-                href={`https://carthage.tzkt.io/${tokenStorage.owner}/operations`}
+                href={`https://carthage.tzkt.io/${$store.tokenStorage.owner}/operations`}
                 target="_blank"
                 rel="noreferrer noopener">
-                {tokenStorage.owner.slice(0, 7) + '...' + tokenStorage.owner.slice(-7)}
+                {$store.tokenStorage.owner.slice(0, 7) + '...' + $store.tokenStorage.owner.slice(-7)}
               </a>
             </p>
           {:else}Unavailable{/if}
@@ -74,8 +78,10 @@
           <p class="title is-6">Buy Price:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
-            <p class="subtitle is-6">{tokenStorage.buyPrice / 1000000} XTZ</p>
+          {#if $store.tokenStorage}
+            <p class="subtitle is-6">
+              {$store.tokenStorage.buyPrice / 1000000} XTZ
+            </p>
           {:else}Unavailable{/if}
         </div>
       </div>
@@ -84,8 +90,8 @@
           <p class="title is-6">Number of decimals:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
-            <p class="subtitle is-6">{tokenStorage.metadata.decimals}</p>
+          {#if $store.tokenStorage}
+            <p class="subtitle is-6">{$store.tokenStorage.metadata.decimals}</p>
           {:else}Unavailable{/if}
         </div>
       </div>
@@ -94,8 +100,10 @@
           <p class="title is-6">Token paused:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
-            <p class="subtitle is-6">{tokenStorage.paused ? 'Yes' : 'No'}</p>
+          {#if $store.tokenStorage}
+            <p class="subtitle is-6">
+              {$store.tokenStorage.paused ? 'Yes' : 'No'}
+            </p>
           {:else}Unavailable{/if}
         </div>
       </div>
@@ -104,13 +112,13 @@
           <p class="title is-6">Address:</p>
         </div>
         <div class="column is-half has-text-right">
-          {#if tokenStorage}
+          {#if $store.tokenStorage}
             <p class="subtitle is-6">
               <a
-                href={`https://carthage.tzkt.io/${tokenStorage.address}/operations`}
+                href={`https://carthage.tzkt.io/${$store.tokenStorage.address}/operations`}
                 target="_blank"
                 rel="noreferrer noopener">
-                {tokenStorage.address.slice(0, 7) + '...' + tokenStorage.address.slice(-7)}
+                {$store.tokenStorage.address.slice(0, 7) + '...' + $store.tokenStorage.address.slice(-7)}
               </a>
             </p>
           {:else}Unavailable{/if}

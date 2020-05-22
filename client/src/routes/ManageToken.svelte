@@ -14,7 +14,6 @@
 
   let token = undefined;
   let tokenSymbol = undefined;
-  let ownerBalance = 0;
   let tokensSuggestions = [];
   let searchValue = "";
   let noSuggestion = false;
@@ -81,7 +80,7 @@
         const account = await tokenStorage.ledger.get($store.userAddress);
         if (account) {
           // user's balance
-          ownerBalance = account.balance.toNumber();
+          store.updateUserBalance(account.balance.toNumber());
           // user's allowed spenders
           const approvedAddresses = {};
           account.allowances.forEach(
@@ -89,7 +88,7 @@
           );
           store.updateApprovedAddresses(approvedAddresses);
         } else {
-          ownerBalance = 0;
+          store.updateUserBalance(0);
           store.updateApprovedAddresses({});
         }
       } catch (error) {
@@ -176,21 +175,13 @@
               <br />
               {tokenSymbol}
             </p>
-            <TokenInfo
-              tokenStorage={$store.tokenStorage}
-              userBalance={ownerBalance} />
+            <TokenInfo />
             <div class="columns is-centered">
               <div class="column is-two-fifths">
-                <MintTokens
-                  on:updateUserBalance={event => {
-                    ownerBalance += event.detail;
-                  }} />
+                <MintTokens />
               </div>
               <div class="column is-two-fifths">
-                <SupplyPool
-                  on:updateUserBalance={event => {
-                    ownerBalance -= event.detail;
-                  }} />
+                <SupplyPool />
               </div>
             </div>
             <div class="columns is-centered">
@@ -206,11 +197,7 @@
                 <RemoveApproval />
               </div>
               <div class="column is-two-fifths">
-                <BurnTokens
-                  userBalance={ownerBalance}
-                  on:updateUserBalance={event => {
-                    ownerBalance -= event.detail;
-                  }} />
+                <BurnTokens />
               </div>
             </div>
           </div>

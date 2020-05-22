@@ -3,16 +3,58 @@
 
   let recipient = "";
   let amount = "";
+  let notEnoughFunds = false;
   let transferError = false;
   let transferring = false;
 
   const formatValue = event => {
     amount = parseInt(event.target.value);
     transferError = false;
+    if (amount > $store.userBalance) {
+      notEnoughFunds = true;
+    } else {
+      notEnoughFunds = false;
+    }
   };
 
-  const transfer = () => {
+  const transfer = async () => {
     // transfer tokens
+    transferError = false;
+    transferring = true;
+    try {
+      const op = await $store.tokenInstance.methods
+        .transfer($store.userAddress, recipient, amount)
+        .send();
+      await op.confirmation();
+      if (window.localStorage) {
+        const txHistoryItem = `${$store.tokenStorage.metadata.symbol}txsHistory`;
+        // saves transaction in local storage
+        const newTx = {
+          txHash: op.hash,
+          recipient,
+          amount,
+          token: $store.tokenStorage.symbol,
+          timestamp: Date.now()
+        };
+        if ($store.transactionsHistory.length > 0) {
+          const txs = [newTx, ...$store.transactionsHistory];
+          window.localStorage.setItem(txHistoryItem, JSON.stringify(txs));
+          store.updateTransactionsHistory(txs);
+        } else {
+          window.localStorage.setItem(txHistoryItem, JSON.stringify([newTx]));
+          store.updateTransactionsHistory([newTx]);
+        }
+      }
+      // updates user's balance
+      store.updateUserBalance($store.userBalance - amount);
+      recipient = "";
+      amount = "";
+      transferring = false;
+    } catch (error) {
+      console.log(error);
+      transferError = true;
+      transferring = false;
+    }
   };
 </script>
 
@@ -53,7 +95,7 @@
     <input
       id="amountToApprove"
       class="input"
-      class:is-danger={transferError}
+      class:is-danger={transferError || notEnoughFunds}
       type="number"
       placeholder={`Amount of ${$store.tokenStorage.symbol} tokens`}
       on:input={formatValue}
@@ -70,7 +112,7 @@
       class="button is-info"
       class:is-loading={transferring}
       on:click={transfer}
-      disabled={!recipient}>
+      disabled={!recipient && !amount}>
       Transfer
     </button>
   </div>

@@ -1,8 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
   import store from "../../store";
-
-  const dispatch = createEventDispatcher();
 
   export let userBalance;
 
@@ -21,7 +18,7 @@
       const op = await $store.tokenInstance.methods.burn(tokensToBurn).send();
       await op.confirmation();
       burning = false;
-      dispatch("updateUserBalance", tokensToBurn);
+      store.updateUserBalance($store.userBalance - tokensToBurn);
       tokensToBurn = "";
       store.updateTokenStorage({
         ...$store.tokenStorage,

@@ -1,8 +1,5 @@
 <script>
-  import { createEventDispatcher } from "svelte";
   import store from "../../store";
-
-  const dispatch = createEventDispatcher();
 
   let supplyError = false;
   let tokensToSupply = "";
@@ -21,7 +18,7 @@
         .send();
       await op.confirmation();
       supplying = false;
-      dispatch("updateUserBalance", tokensToSupply);
+      store.updateUserBalance($store.userBalance - tokensToSupply);
       tokensToSupply = "";
       store.updateTokenStorage({
         ...$store.tokenStorage,

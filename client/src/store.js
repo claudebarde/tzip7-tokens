@@ -7,10 +7,12 @@ const blankState = {
   contractInstance: undefined,
   contractStorage: undefined,
   userAddress: undefined,
+  userBalance: 0,
   Tezos: undefined,
   tokenInstance: undefined,
   tokenStorage: undefined,
   approvedAddresses: {},
+  transactionsHistory: [],
 };
 
 const store = writable(blankState);
@@ -29,6 +31,9 @@ const state = {
   updateUserAddress: (address) => {
     store.update((store) => ({ ...store, userAddress: address }));
   },
+  updateUserBalance: (balance) => {
+    store.update((store) => ({ ...store, userBalance: balance }));
+  },
   updateTezos: (Tezos) => {
     store.update((store) => ({ ...store, Tezos }));
   },
@@ -43,6 +48,9 @@ const state = {
       ...store,
       approvedAddresses: { ...addresses },
     }));
+  },
+  updateTransactionsHistory: (transactions) => {
+    store.update((store) => ({ ...store, transactionsHistory: transactions }));
   },
 };
 

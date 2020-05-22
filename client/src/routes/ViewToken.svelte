@@ -5,13 +5,13 @@
   import Approve from "../components/Manage/Approve.svelte";
   import RemoveApproval from "../components/Manage/RemoveApproval.svelte";
   import Transfer from "../components/View/Transfer.svelte";
+  import TransactionsHistory from "../components/View/TransactionsHistory.svelte";
   import store from "../store";
 
   export let params;
 
   let token = undefined;
   let tokenNotFound = false;
-  let userBalance = 0;
 
   onMount(() => {
     if (
@@ -26,6 +26,21 @@
   });
 
   afterUpdate(async () => {
+    if ($store.userAddress && $store.tokenStorage && $store.userBalance === 0) {
+      // updates user's balance if user wasn't connected
+      const account = await $store.tokenStorage.ledger.get($store.userAddress);
+      if (account) {
+        // user's balance
+        store.updateUserBalance(account.balance.toNumber());
+        // user's allowed spenders
+        const approvedAddresses = {};
+        account.allowances.forEach(
+          (value, key) => (approvedAddresses[key] = value)
+        );
+        store.updateApprovedAddresses(approvedAddresses);
+      }
+    }
+
     if (
       params.tokenSymbol &&
       $store.contractStorage &&
@@ -38,7 +53,6 @@
           params.tokenSymbol
         );
         if (_token) {
-          console.log(_token);
           token = _token;
           const tokenInstance = await $store.Tezos.contract.at(_token.address);
           const tokenStorage = await tokenInstance.storage();
@@ -50,7 +64,7 @@
             const account = await tokenStorage.ledger.get($store.userAddress);
             if (account) {
               // user's balance
-              userBalance = account.balance.toNumber();
+              store.updateUserBalance(account.balance.toNumber());
               // user's allowed spenders
               const approvedAddresses = {};
               account.allowances.forEach(
@@ -58,7 +72,7 @@
               );
               store.updateApprovedAddresses(approvedAddresses);
             } else {
-              userBalance = 0;
+              store.updateUserBalance(0);
               store.updateApprovedAddresses({});
             }
           }
@@ -68,6 +82,16 @@
       } catch (error) {
         console.log(error);
         tokenNotFound = true;
+      }
+    }
+
+    if ($store.tokenStorage && window.localStorage) {
+      // retrieves transaction history for token in localStorage
+      const txsHistory = window.localStorage.getItem(
+        `${$store.tokenStorage.metadata.symbol}txsHistory`
+      );
+      if (txsHistory) {
+        store.updateTransactionsHistory(JSON.parse(txsHistory));
       }
     }
   });
@@ -98,7 +122,7 @@
             <br />
             Token Interface
           </p>
-          <TokenInfo tokenStorage={$store.tokenStorage} {userBalance} />
+          <TokenInfo />
         {/if}
         {#if $store.userAddress}
           {#if $store.tokenStorage}
@@ -114,7 +138,9 @@
               <div class="column is-two-fifths">
                 <RemoveApproval />
               </div>
-              <div class="column is-two-fifths">other</div>
+              <div class="column is-two-fifths">
+                <TransactionsHistory />
+              </div>
             </div>
           {/if}
         {:else}
