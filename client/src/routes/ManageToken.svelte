@@ -209,6 +209,8 @@
             <div class="container">
               {#if !$store.userAddress}
                 Please connect your wallet to identify yourself
+              {:else if !$store.tokenStorage}
+                Loading...
               {:else}You are not allowed to manage this token{/if}
             </div>
           </section>

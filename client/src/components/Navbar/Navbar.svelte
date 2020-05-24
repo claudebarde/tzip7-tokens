@@ -53,12 +53,16 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     border-right: solid 1px grey;
     padding: 70px 0px;
     position: fixed;
-    z-index: 100;
+  }
+
+  .navigation-left {
+    display: flex;
+    flex-direction: column;
   }
 
   .navigation-element {
@@ -86,8 +90,15 @@
   @media only screen and (max-width: 1024px) {
     .navigation {
       flex-direction: row;
+      justify-content: flex-start;
       padding: 10px 5px;
       height: 60px;
+      width: 100%;
+    }
+
+    .navigation-left {
+      flex-direction: row;
+      justify-content: space-between;
       width: 100%;
     }
 
@@ -103,67 +114,84 @@
 </style>
 
 <div class="navigation has-text-centered has-background-grey-dark">
-  <div
-    class="navigation-element"
-    on:click={() => push('/')}
-    on:mouseenter={() => (homeIconHover = true)}
-    on:mouseleave={() => (homeIconHover = false)}>
-    <div class="image navigation-icon">
-      <Home
-        color={$location === '/' ? 'white' : homeIconHover ? '#333' : '#B5B5B5'} />
-    </div>
-    <span
-      class={$location === '/' ? 'has-text-white' : homeIconHover ? 'has-text-black' : 'has-text-grey-light'}>
-      Home
-    </span>
-  </div>
-  <div
-    class="navigation-element"
-    on:click={() => push('/create')}
-    on:mouseenter={() => (createIconHover = true)}
-    on:mouseleave={() => (createIconHover = false)}>
-    <div class="image navigation-icon">
-      <Create
-        color={$location === '/create' ? 'white' : createIconHover ? '#333' : '#B5B5B5'} />
-    </div>
-    <span
-      class={$location === '/create' ? 'has-text-white' : createIconHover ? 'has-text-black' : 'has-text-grey-light'}>
-      Create
-    </span>
-  </div>
-  <div
-    class="navigation-element"
-    on:click={() => push('/manage')}
-    on:mouseenter={() => (manageIconHover = true)}
-    on:mouseleave={() => (manageIconHover = false)}>
-    <div class="image navigation-icon">
-      <Manage
-        color={$location.includes('/manage') ? 'white' : manageIconHover ? '#333' : '#B5B5B5'} />
-    </div>
-    <span
-      class={$location.includes('/manage') ? 'has-text-white' : manageIconHover ? 'has-text-black' : 'has-text-grey-light'}>
-      Manage
-    </span>
-  </div>
-  {#if $store.tokenStorage}
+  <div class="navigation-left">
     <div
       class="navigation-element"
-      on:click={() => push(`/view/${$store.tokenStorage.symbol}`)}
-      on:mouseenter={() => (coinIconHover = true)}
-      on:mouseleave={() => (coinIconHover = false)}>
+      on:click={() => push('/')}
+      on:mouseenter={() => (homeIconHover = true)}
+      on:mouseleave={() => (homeIconHover = false)}>
       <div class="image navigation-icon">
-        <Coins
-          color={$location.includes('/view') ? 'white' : coinIconHover ? '#333' : '#B5B5B5'} />
+        <Home
+          color={$location === '/' ? 'white' : homeIconHover ? '#333' : '#B5B5B5'} />
       </div>
       <span
-        class={$location.includes('/view') ? 'has-text-white' : coinIconHover ? 'has-text-black' : 'has-text-grey-light'}>
-        {$store.tokenStorage.symbol}
+        class={$location === '/' ? 'has-text-white' : homeIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+        Home
       </span>
     </div>
-  {/if}
-  <br />
+    <div
+      class="navigation-element"
+      on:click={() => push('/create')}
+      on:mouseenter={() => (createIconHover = true)}
+      on:mouseleave={() => (createIconHover = false)}>
+      <div class="image navigation-icon">
+        <Create
+          color={$location === '/create' ? 'white' : createIconHover ? '#333' : '#B5B5B5'} />
+      </div>
+      <span
+        class={$location === '/create' ? 'has-text-white' : createIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+        Create
+      </span>
+    </div>
+    <div
+      class="navigation-element"
+      on:click={() => push('/manage')}
+      on:mouseenter={() => (manageIconHover = true)}
+      on:mouseleave={() => (manageIconHover = false)}>
+      <div class="image navigation-icon">
+        <Manage
+          color={$location.includes('/manage') ? 'white' : manageIconHover ? '#333' : '#B5B5B5'} />
+      </div>
+      <span
+        class={$location.includes('/manage') ? 'has-text-white' : manageIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+        Manage
+      </span>
+    </div>
+    {#if $store.tokenStorage}
+      <div
+        class="navigation-element"
+        on:click={() => push(`/view/${$store.tokenStorage.symbol}`)}
+        on:mouseenter={() => (coinIconHover = true)}
+        on:mouseleave={() => (coinIconHover = false)}>
+        <div class="image navigation-icon">
+          <Coins
+            color={$location.includes('/view') ? 'white' : coinIconHover ? '#333' : '#B5B5B5'} />
+        </div>
+        <span
+          class={$location.includes('/view') ? 'has-text-white' : coinIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+          {$store.tokenStorage.symbol}
+        </span>
+      </div>
+    {/if}
+    <div
+      class="navigation-element is-hidden-desktop"
+      on:click={initWallet}
+      on:mouseenter={() => (walletIconHover = true)}
+      on:mouseleave={() => (walletIconHover = false)}>
+      <div class="image navigation-icon">
+        {#if $store.userAddress}
+          <User color={walletIconHover ? '#333' : '#B5B5B5'} />
+        {:else}
+          <XCircle color={walletIconHover ? '#333' : '#B5B5B5'} />
+        {/if}
+      </div>
+      <span class={walletIconHover ? 'has-text-black' : 'has-text-grey-light'}>
+        Wallet
+      </span>
+    </div>
+  </div>
   <div
-    class="navigation-element"
+    class="navigation-element is-hidden-mobile"
     on:click={initWallet}
     on:mouseenter={() => (walletIconHover = true)}
     on:mouseleave={() => (walletIconHover = false)}>

@@ -1,6 +1,31 @@
 <script>
   import store from "../../store";
+  import Switch from "../../icons/Switch.svelte";
+
+  let pausing = false;
+
+  const pause = async () => {
+    pausing = true;
+    try {
+      const op = await $store.tokenInstance.methods.pause([["unit"]]).send();
+      await op.confirmation();
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
+        ...(await $store.tokenInstance.storage())
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    pausing = false;
+  };
 </script>
+
+<style>
+  .switch-button {
+    vertical-align: middle;
+    cursor: pointer;
+  }
+</style>
 
 <div class="columns is-centered">
   <div class="column is-two-fifths">
@@ -102,7 +127,23 @@
         <div class="column is-half has-text-right">
           {#if $store.tokenStorage}
             <p class="subtitle is-6">
-              {$store.tokenStorage.paused ? 'Yes' : 'No'}
+              {#if $store.tokenStorage.paused}
+                {#if pausing}
+                  <button class="button is-loading is-small">Loading</button>
+                {:else}
+                  <span>Yes</span>
+                  <span class="switch-button" on:click={pause}>
+                    <Switch />
+                  </span>
+                {/if}
+              {:else if pausing}
+                <button class="button is-loading is-small">Loading</button>
+              {:else}
+                <span>No</span>
+                <span class="switch-button" on:click={pause}>
+                  <Switch />
+                </span>
+              {/if}
             </p>
           {:else}Unavailable{/if}
         </div>
