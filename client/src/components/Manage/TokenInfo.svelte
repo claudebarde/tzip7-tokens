@@ -48,7 +48,7 @@
       </div>
       <div class="columns is-mobile">
         <div class="column is-half has-text-left">
-          <p class="title is-6">Account Balance:</p>
+          <p class="title is-6">Your Balance:</p>
         </div>
         <div class="column is-half has-text-right">
           {#if $store.tokenStorage}

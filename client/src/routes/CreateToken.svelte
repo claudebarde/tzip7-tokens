@@ -130,6 +130,15 @@
       height: 60px;
       width: 100%;
     }
+
+    .interface__main {
+      margin-top: -60px;
+    }
+
+    .home-img {
+      max-width: initial;
+      width: 100%;
+    }
   }
 </style>
 
