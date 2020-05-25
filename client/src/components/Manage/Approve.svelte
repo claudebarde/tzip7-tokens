@@ -11,6 +11,7 @@
   let amountToApprove = "";
   let openApprovedAddresses = false;
   let checkedAllowances = false;
+  let errorMessage = "error";
 
   $: if (!!removedApproval) {
     console.log("approval removed for:", removedApproval);
@@ -20,6 +21,10 @@
   const formatValue = event => {
     amountToApprove = parseInt(event.target.value);
     approveError = false;
+    if (amountToApprove > $store.userBalance) {
+      approveError = true;
+      errorMessage = "You don't have enough tokens in your balance";
+    }
   };
 
   const checkAllowances = async () => {
@@ -59,6 +64,7 @@
       console.log(error);
       approving = false;
       approveError = true;
+      errorMessage = "An error has occured, please try again";
     }
   };
 
@@ -111,15 +117,14 @@
       class="input"
       class:is-danger={approveError}
       type="number"
-      placeholder="Price in XTZ"
+      placeholder={$store.tokenStorage ? `Amount in ${$store.tokenStorage.metadata.symbol}` : 'Loading...'}
       on:input={formatValue}
       value={amountToApprove}
       disabled={approving} />
-    {#if approveError}
-      <p class="is-size-7 has-text-right has-text-danger">
-        An error has occured, please try again.
-      </p>
-    {/if}
+    <p
+      class={`is-size-7 has-text-right ${approveError ? 'has-text-danger' : 'has-text-white'}`}>
+      {errorMessage}
+    </p>
   </div>
   <div class="bottom-buttons">
     <div class="dropdown" class:is-active={openApprovedAddresses}>
@@ -154,7 +159,7 @@
       class="button is-info"
       class:is-loading={approving}
       on:click={approve}
-      disabled={!addressToApprove || !amountToApprove}>
+      disabled={!addressToApprove || !amountToApprove || approveError}>
       Approve
     </button>
   </div>

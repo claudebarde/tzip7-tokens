@@ -64,11 +64,10 @@
       on:input={formatValue}
       value={tokensToMint}
       disabled={minting} />
-    {#if mintingError}
-      <p class="is-size-7 has-text-right has-text-danger">
-        An error has occured, please try again.
-      </p>
-    {/if}
+    <p
+      class={`is-size-7 has-text-right ${mintingError ? 'has-text-danger' : 'has-text-white'}`}>
+      An error has occured, please try again.
+    </p>
   </div>
   <div class="bottom-buttons">
     <button

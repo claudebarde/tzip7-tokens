@@ -3,6 +3,7 @@
   import Router from "svelte-spa-router";
   import { Tezos } from "@taquito/taquito";
   import { TezBridgeSigner } from "@taquito/tezbridge-signer";
+  //import { TezBridgeWallet } from "@taquito/tezbridge-wallet";
   import Landing from "./routes/Landing.svelte";
   import CreateToken from "./routes/CreateToken.svelte";
   import ManageToken from "./routes/ManageToken.svelte";
@@ -26,6 +27,10 @@
         rpc: "http://localhost:8732",
         signer: new TezBridgeSigner()
       });
+      /*Tezos.setProvider({
+        rpc: "http://localhost:8732",
+        wallet: new TezBridgeWallet()
+      });*/
     } else if (config.NETWORK === "carthage") {
       Tezos.setProvider({
         rpc: "https://carthagenet.SmartPy.io",

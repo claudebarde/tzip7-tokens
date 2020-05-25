@@ -86,11 +86,10 @@
         <span class="icon is-small is-left">ꜩ</span>
       </p>
     </div>
-    {#if priceError}
-      <p class="is-size-7 has-text-right has-text-danger">
-        An error has occured, please try again.
-      </p>
-    {/if}
+    <p
+      class={`is-size-7 has-text-right ${priceError ? 'has-text-danger' : 'has-text-white'}`}>
+      An error has occured, please try again.
+    </p>
     <div class="bottom-buttons">
       <button
         class="button is-info"

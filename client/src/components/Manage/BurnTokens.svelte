@@ -1,15 +1,18 @@
 <script>
   import store from "../../store";
 
-  export let userBalance;
-
   let tokensToBurn = "";
   let burning = false;
   let burningError = false;
+  let errorMessage = "error";
 
   const formatValue = event => {
     tokensToBurn = parseInt(event.target.value);
     burningError = false;
+    if (tokensToBurn > $store.userBalance) {
+      burningError = true;
+      errorMessage = "You don't have enough tokens in your balance";
+    }
   };
 
   const burnTokens = async () => {
@@ -62,22 +65,21 @@
       class="input"
       class:is-danger={burningError}
       type="number"
-      placeholder={`Maximum amount of tokens to burn: ${userBalance}`}
+      placeholder={`Maximum amount of tokens to burn: ${$store.userBalance}`}
       on:input={formatValue}
       value={tokensToBurn}
       disabled={burning} />
-    {#if burningError}
-      <p class="is-size-7 has-text-right has-text-danger">
-        An error has occured, please try again.
-      </p>
-    {/if}
+    <p
+      class={`is-size-7 has-text-right ${burningError ? 'has-text-danger' : 'has-text-white'}`}>
+      {errorMessage}
+    </p>
   </div>
   <div class="bottom-buttons">
     <button
       class="button is-danger"
       class:is-loading={burning}
       on:click={burnTokens}
-      disabled={!tokensToBurn}>
+      disabled={!tokensToBurn || burningError}>
       Burn tokens
     </button>
   </div>

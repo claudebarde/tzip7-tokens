@@ -4,10 +4,15 @@
   let supplyError = false;
   let tokensToSupply = "";
   let supplying = false;
+  let errorMessage = "error";
 
   const formatValue = event => {
     tokensToSupply = parseInt(event.target.value);
     supplyError = false;
+    if (tokensToSupply > $store.userBalance) {
+      supplyError = true;
+      errorMessage = "You don't have enough tokens in your balance";
+    }
   };
 
   const supplyPool = async () => {
@@ -28,6 +33,7 @@
       console.log(error);
       supplyError = true;
       supplying = false;
+      errorMessage = "An error has occured, please try again";
     }
   };
 </script>
@@ -68,11 +74,10 @@
       on:input={formatValue}
       value={tokensToSupply}
       disabled={supplying} />
-    {#if supplyError}
-      <p class="is-size-7 has-text-right has-text-danger">
-        An error has occured, please try again.
-      </p>
-    {/if}
+    <p
+      class={`is-size-7 has-text-right ${supplyError ? 'has-text-danger' : 'has-text-white'}`}>
+      {errorMessage}
+    </p>
   </div>
   <div class="bottom-buttons">
     <button
