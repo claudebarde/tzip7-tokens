@@ -1,4 +1,5 @@
 <script>
+  import { location } from "svelte-spa-router";
   import store from "../../store";
   import Switch from "../../icons/Switch.svelte";
 
@@ -127,22 +128,28 @@
         <div class="column is-half has-text-right">
           {#if $store.tokenStorage}
             <p class="subtitle is-6">
-              {#if $store.tokenStorage.paused}
-                {#if pausing}
+              {#if $location.includes('manage')}
+                {#if $store.tokenStorage.paused}
+                  {#if pausing}
+                    <button class="button is-loading is-small">Loading</button>
+                  {:else}
+                    <span>Yes</span>
+                    <span class="switch-button" on:click={pause}>
+                      <Switch />
+                    </span>
+                  {/if}
+                {:else if pausing}
                   <button class="button is-loading is-small">Loading</button>
                 {:else}
-                  <span>Yes</span>
+                  <span>No</span>
                   <span class="switch-button" on:click={pause}>
                     <Switch />
                   </span>
                 {/if}
-              {:else if pausing}
-                <button class="button is-loading is-small">Loading</button>
+              {:else if $store.tokenStorage.paused}
+                <span>Yes</span>
               {:else}
                 <span>No</span>
-                <span class="switch-button" on:click={pause}>
-                  <Switch />
-                </span>
               {/if}
             </p>
           {:else}Unavailable{/if}

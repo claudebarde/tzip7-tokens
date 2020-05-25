@@ -4,17 +4,18 @@
   let amount = "";
   let buyError = false;
   let buying = false;
-  let exceedSupplyPool = false;
+  let errorMessage = "error";
 
   const formatValue = event => {
     let value = event.target.value.trim();
+    buyError = false;
     if (value) {
       amount = parseInt(value);
-      exceedSupplyPool = amount > $store.tokenStorage.tokenBuyPool.toNumber();
+      buyError = amount > $store.tokenStorage.tokenBuyPool.toNumber();
+      errorMessage = "There are not enough tokens available in the pool";
     } else {
       amount = "";
     }
-    buyError = false;
   };
 
   const transfer = async () => {
@@ -32,6 +33,7 @@
         const newTx = {
           type: "buy",
           txHash: op.hash,
+          sender: $store.userAddress,
           amount,
           timestamp: Date.now()
         };
@@ -45,10 +47,10 @@
         }
       }
       // updates user's balance
-      store.updateUserBalance($store.userBalance - amount);
+      store.updateUserBalance($store.userBalance + amount);
       // gets new storage
-      store.updateContractStorage({
-        ...$store.contractStorage,
+      store.updateTokenStorage({
+        ...$store.tokenStorage,
         ...(await $store.tokenInstance.storage())
       });
       amount = "";
@@ -86,22 +88,21 @@
     <input
       id="buyTokens"
       class="input"
-      class:is-danger={buyError || exceedSupplyPool}
+      class:is-danger={buyError}
       type="number"
       placeholder={`Amount of ${$store.tokenStorage.symbol} tokens`}
       on:input={formatValue}
       value={amount}
       disabled={buying} />
-    {#if buyError}
-      <p class="is-size-7 has-text-right has-text-danger">
-        An error has occured, please try again.
-      </p>
-    {/if}
+    <p
+      class={`is-size-7 has-text-right ${buyError ? 'has-text-danger' : 'has-text-white'}`}>
+      {errorMessage}
+    </p>
   </div>
   <div class="bottom-buttons">
     <button class="button is-static">
-      {#if exceedSupplyPool}
-        Not Enough Tokens
+      {#if buyError}
+        Error
       {:else}
         {amount || 0} token{amount > 1 ? 's' : ''} for ꜩ {(amount * $store.tokenStorage.buyPrice) / 1000000}
       {/if}
@@ -110,7 +111,7 @@
       class="button is-success"
       class:is-loading={buying}
       on:click={transfer}
-      disabled={!amount || exceedSupplyPool}>
+      disabled={!amount || buyError}>
       Buy
     </button>
   </div>

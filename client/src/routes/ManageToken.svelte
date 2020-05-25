@@ -44,6 +44,13 @@
     // if user was not logged in, this will check if he can manage the token
     if ($store.tokenStorage.owner === $store.userAddress) {
       isAllowed = true;
+      // if user logged in and is token manager, we refresh the UI with data from smart contract
+      (async () => {
+        const account = await $store.tokenStorage.ledger.get(
+          $store.userAddress
+        );
+        store.updateUserBalance(account.balance.toNumber());
+      })();
     } else {
       isAllowed = false;
     }

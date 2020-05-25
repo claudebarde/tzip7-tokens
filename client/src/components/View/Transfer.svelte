@@ -3,17 +3,16 @@
 
   let recipient = "";
   let amount = "";
-  let notEnoughFunds = false;
   let transferError = false;
   let transferring = false;
+  let errorMessage = "error";
 
   const formatValue = event => {
     amount = parseInt(event.target.value);
     transferError = false;
     if (amount > $store.userBalance) {
-      notEnoughFunds = true;
-    } else {
-      notEnoughFunds = false;
+      transferError = true;
+      errorMessage = "You don't have enough tokens in your balance";
     }
   };
 
@@ -32,6 +31,7 @@
         const newTx = {
           type: "transfer",
           txHash: op.hash,
+          sender: $store.userAddress,
           recipient,
           amount,
           timestamp: Date.now()
@@ -95,24 +95,23 @@
     <input
       id="amountToApprove"
       class="input"
-      class:is-danger={transferError || notEnoughFunds}
+      class:is-danger={transferError}
       type="number"
       placeholder={`Amount of ${$store.tokenStorage.symbol} tokens`}
       on:input={formatValue}
       value={amount}
       disabled={transferring} />
-    {#if transferError}
-      <p class="is-size-7 has-text-right has-text-danger">
-        An error has occured, please try again.
-      </p>
-    {/if}
+    <p
+      class={`is-size-7 has-text-right ${transferError ? 'has-text-danger' : 'has-text-white'}`}>
+      {errorMessage}
+    </p>
   </div>
   <div class="bottom-buttons">
     <button
       class="button is-info"
       class:is-loading={transferring}
       on:click={transfer}
-      disabled={!recipient && !amount}>
+      disabled={(!recipient && !amount) || transferError}>
       Transfer
     </button>
   </div>

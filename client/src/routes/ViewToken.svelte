@@ -86,13 +86,16 @@
       }
     }
 
-    if ($store.tokenStorage && window.localStorage) {
+    if ($store.tokenStorage && window.localStorage && $store.userAddress) {
       // retrieves transaction history for token in localStorage
       const txsHistory = window.localStorage.getItem(
         `${$store.tokenStorage.metadata.symbol}txsHistory`
       );
       if (txsHistory) {
-        store.updateTransactionsHistory(JSON.parse(txsHistory));
+        const history = JSON.parse(txsHistory).filter(
+          tx => tx.sender === $store.userAddress
+        );
+        store.updateTransactionsHistory(history);
       }
     }
   });
