@@ -50,7 +50,6 @@
   });
 
   afterUpdate(async () => {
-    console.log("update");
     if (
       $store.userAddress &&
       tokenSymbol &&

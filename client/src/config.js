@@ -1,3 +1,3 @@
 export default {
-  NETWORK: "local", // local | carthage
+  NETWORK: process.env.NODE_ENV === "development" ? "local" : "carthage",
 };

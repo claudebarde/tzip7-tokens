@@ -3,7 +3,9 @@ import config from "./config";
 
 const blankState = {
   contractAddress:
-    config.NETWORK === "local" ? "KT1TP5urLdq7mByRyaCvf39ssv2dYi4j3Ch1" : "",
+    config.NETWORK === "local"
+      ? "KT1TP5urLdq7mByRyaCvf39ssv2dYi4j3Ch1"
+      : "KT1XJMnRSJEejrNs9zzKBz66uth9cJiryfv5",
   contractInstance: undefined,
   contractStorage: undefined,
   userAddress: undefined,
