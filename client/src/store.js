@@ -3,7 +3,7 @@ import config from "./config";
 
 const blankState = {
   contractAddress:
-    config.NETWORK === "local" ? "KT1URPuwdxqdEsUVZwUCuBiD7Nuga4sGwARb" : "",
+    config.NETWORK === "local" ? "KT1TP5urLdq7mByRyaCvf39ssv2dYi4j3Ch1" : "",
   contractInstance: undefined,
   contractStorage: undefined,
   userAddress: undefined,
@@ -51,6 +51,37 @@ const state = {
   },
   updateTransactionsHistory: (transactions) => {
     store.update((store) => ({ ...store, transactionsHistory: transactions }));
+  },
+  formatWithDecimals: (action, amount, decimals) => {
+    if (decimals > 0 && amount > 0) {
+      if (action === "multiply") {
+        // MULTIPLICATION
+
+        let multiplier = "1";
+        // creates multiplier
+        for (let i = 0; i < decimals; i++) {
+          multiplier += "0";
+        }
+        // converts divisor to number
+        multiplier = parseInt(multiplier);
+
+        return amount * multiplier;
+      } else if (action === "divide") {
+        // DIVISION
+
+        let divisor = "1";
+        // creates divisor
+        for (let i = 0; i < decimals; i++) {
+          divisor += "0";
+        }
+        // converts divisor to number
+        divisor = parseInt(divisor);
+
+        return amount / divisor;
+      }
+    }
+
+    return amount;
   },
 };
 

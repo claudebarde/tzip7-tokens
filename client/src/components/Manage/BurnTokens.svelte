@@ -65,7 +65,7 @@
       class="input"
       class:is-danger={burningError}
       type="number"
-      placeholder={`Maximum amount of tokens to burn: ${$store.userBalance}`}
+      placeholder={`Maximum amount of tokens to burn: ${$store.userBalance > 0 ? $store.userBalance.toLocaleString('en-US') : '--'}`}
       on:input={formatValue}
       value={tokensToBurn}
       disabled={burning} />

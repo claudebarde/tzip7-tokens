@@ -20,6 +20,7 @@
   let isAllowed = undefined;
   let isUnknown = false;
   let removedApproval = undefined;
+  let currentUser = undefined;
 
   const searchTokens = event => {
     const input = event.target.value.trim().toUpperCase();
@@ -40,22 +41,6 @@
     }
   };
 
-  $: if ($store.userAddress && $store.tokenStorage) {
-    // if user was not logged in, this will check if he can manage the token
-    if ($store.tokenStorage.owner === $store.userAddress) {
-      isAllowed = true;
-      // if user logged in and is token manager, we refresh the UI with data from smart contract
-      (async () => {
-        const account = await $store.tokenStorage.ledger.get(
-          $store.userAddress
-        );
-        store.updateUserBalance(account.balance.toNumber());
-      })();
-    } else {
-      isAllowed = false;
-    }
-  }
-
   onMount(() => {
     if (params.tokenSymbol) {
       tokenSymbol = params.tokenSymbol;
@@ -65,7 +50,15 @@
   });
 
   afterUpdate(async () => {
-    if (tokenSymbol && $store.contractStorage && !$store.tokenStorage) {
+    console.log("update");
+    if (
+      $store.userAddress &&
+      tokenSymbol &&
+      $store.contractStorage &&
+      !$store.tokenStorage
+    ) {
+      // saves current user for later if it will change
+      currentUser = $store.userAddress;
       // checks if current user has the right to manage the token
       try {
         const _token = await $store.contractStorage.tokens.get(tokenSymbol);
@@ -102,6 +95,22 @@
         if (error === "UnknownToken") {
           isUnknown = true;
         }
+      }
+    }
+
+    if ($store.userAddress !== currentUser && $store.tokenStorage) {
+      // if user was not logged in, this will check if he can manage the token
+      if ($store.tokenStorage.owner === $store.userAddress) {
+        isAllowed = true;
+        // if user logged in and is token manager, we refresh the UI with data from smart contract
+        (async () => {
+          const account = await $store.tokenStorage.ledger.get(
+            $store.userAddress
+          );
+          if (account) store.updateUserBalance(account.balance.toNumber());
+        })();
+      } else {
+        isAllowed = false;
       }
     }
   });

@@ -38,9 +38,16 @@
         <div class="column is-half has-text-right">
           {#if $store.tokenStorage}
             <p class="subtitle is-6">
-              {$store.tokenStorage.totalSupply
-                .toNumber()
-                .toLocaleString('en-US')}
+              {store
+                .formatWithDecimals(
+                  'divide',
+                  $store.tokenStorage.totalSupply.toNumber(),
+                  $store.tokenStorage.metadata.decimals.toNumber()
+                )
+                .toLocaleString('en-US', {
+                  minimumFractionDigits: $store.tokenStorage.metadata.decimals.toNumber(),
+                  maximumFractionDigits: $store.tokenStorage.metadata.decimals.toNumber()
+                })}
               {$store.tokenStorage.metadata.symbol}
             </p>
           {:else}Unavailable{/if}
@@ -56,7 +63,16 @@
               Loading...
             {:else}
               <p class="subtitle is-6">
-                {$store.userBalance.toLocaleString('en-US')}
+                {store
+                  .formatWithDecimals(
+                    'divide',
+                    $store.userBalance,
+                    $store.tokenStorage.metadata.decimals
+                  )
+                  .toLocaleString('en-US', {
+                    minimumFractionDigits: $store.tokenStorage.metadata.decimals.toNumber(),
+                    maximumFractionDigits: $store.tokenStorage.metadata.decimals.toNumber()
+                  })}
                 {$store.tokenStorage.metadata.symbol}
               </p>
             {/if}
@@ -70,9 +86,16 @@
         <div class="column is-half has-text-right">
           {#if $store.tokenStorage}
             <p class="subtitle is-6">
-              {$store.tokenStorage.tokenBuyPool
-                .toNumber()
-                .toLocaleString('en-US')}
+              {store
+                .formatWithDecimals(
+                  'divide',
+                  $store.tokenStorage.tokenBuyPool.toNumber(),
+                  $store.tokenStorage.metadata.decimals
+                )
+                .toLocaleString('en-US', {
+                  minimumFractionDigits: $store.tokenStorage.metadata.decimals,
+                  maximumFractionDigits: $store.tokenStorage.metadata.decimals
+                })}
               {$store.tokenStorage.metadata.symbol}
             </p>
           {:else}Unavailable{/if}

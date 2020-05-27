@@ -70,7 +70,7 @@
       class="input"
       class:is-danger={supplyError}
       type="number"
-      placeholder="Amount of tokens to transfer to the supply pool"
+      placeholder={`Available tokens: ${$store.userBalance > 0 ? $store.userBalance.toLocaleString('en-US') : '--'}`}
       on:input={formatValue}
       value={tokensToSupply}
       disabled={supplying} />

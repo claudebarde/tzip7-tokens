@@ -8,7 +8,7 @@
 
   let tokenName = "";
   let tokenSymbol = "";
-  let tokenDecimals = 0;
+  let tokenDecimals = "";
   let openConfirmModal = false;
   let creatingNewToken = false;
   let tokenNameError = false;
@@ -57,7 +57,7 @@
         storage: {
           owner: $store.userAddress,
           metadata: {
-            decimals: tokenDecimals,
+            decimals: parseInt(tokenDecimals) || 0,
             extras: new MichelsonMap(),
             name: tokenName,
             symbol: tokenSymbol,
@@ -66,7 +66,9 @@
           buyPrice: 0,
           tokenBuyPool: 0,
           totalSupply: 0,
-          ledger: new MichelsonMap()
+          ledger: MichelsonMap.fromLiteral({
+            [$store.userAddress]: { balance: 0, allowances: new MichelsonMap() }
+          })
         }
       });
       const contract = await originationOp.contract();
@@ -301,8 +303,6 @@
                 <div class="box">
                   <div class="title is-5">Choose a decimal value</div>
                   <div class="subtitle is-6">
-                    <!--Is your token divisible? How many decimals do you want to
-                    allow?-->
                     This will only affect the display of your token if you allow
                     subdivisions (like cents for dollars):
                   </div>
@@ -310,7 +310,7 @@
                     type="number"
                     class="input"
                     bind:value={tokenDecimals}
-                    placeholder="Your token decimals" />
+                    placeholder="Default to 0" />
                 </div>
               </div>
             </div>
