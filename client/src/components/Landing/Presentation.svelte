@@ -46,7 +46,7 @@
             token in order to make the approach easier for beginners.
             <br />
             For example, you will be allowed to set your own price for your
-            token here although the price in a real-case token may depend on
+            token here, although the price in a real-case token may depend on
             different variables.
           </div>
           <br />

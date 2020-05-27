@@ -165,7 +165,7 @@
         </div>
         <div class="columns is-mobile is-centered">
           <div class="column is-one-fourth">Token Decimals:</div>
-          <div class="column is-one-fourth">{tokenDecimals}</div>
+          <div class="column is-one-fourth">{parseInt(tokenDecimals) || 0}</div>
           <div class="column is-one-fourth">Admin Address:</div>
           <div class="column is-one-fourth">
             {$store.userAddress.slice(0, 7) + '...' + $store.userAddress.slice(-7)}
@@ -343,7 +343,9 @@
                       <p class="subtitle is-5">
                         Symbol: {tokenSymbol || 'none'}
                       </p>
-                      <p class="subtitle is-5">Decimals: {tokenDecimals}</p>
+                      <p class="subtitle is-5">
+                        Decimals: {parseInt(tokenDecimals) || 0}
+                      </p>
                     </div>
                     <br />
                     <br />
