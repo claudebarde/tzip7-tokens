@@ -106,6 +106,7 @@
   onMount(() => {
     store.updateTokenInstance(undefined);
     store.updateTokenStorage(undefined);
+    window.scrollTo(0, 0);
   });
 </script>
 
