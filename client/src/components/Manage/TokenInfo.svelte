@@ -186,7 +186,7 @@
           {#if $store.tokenStorage}
             <p class="subtitle is-6">
               <a
-                href={`https://carthage.tzkt.io/${$store.tokenStorage.address}/operations`}
+                href={`https://you.better-call.dev/carthagenet/${$store.tokenStorage.address}/operations`}
                 target="_blank"
                 rel="noreferrer noopener">
                 {$store.tokenStorage.address.slice(0, 7) + '...' + $store.tokenStorage.address.slice(-7)}
