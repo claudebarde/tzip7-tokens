@@ -50,6 +50,8 @@
   const originateContract = async () => {
     creatingNewToken = true;
     firstTx = true;
+    tokenName = tokenName.toUpperCase();
+    tokenSymbol = tokenSymbol.toUpperCase();
     // deploying contract for new token
     try {
       const originationOp = await $store.Tezos.contract.originate({

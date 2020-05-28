@@ -101,6 +101,13 @@
   });
 </script>
 
+<svelte:head>
+  {#if tokenNotFound}
+    <title>TZIP7 TOKEN - Not found</title>
+  {:else if token}
+    <title>{token.symbol} TOKEN</title>
+  {/if}
+</svelte:head>
 <div class="interface">
   <div class="interface__navbar">
     <Navbar />
