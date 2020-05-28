@@ -133,7 +133,8 @@
         <div class="column is-half has-text-right">
           {#if $store.tokenStorage}
             <p class="subtitle is-6">
-              {$store.tokenStorage.buyPrice / 1000000} XTZ
+              {store.formatWithDecimals('multiply', $store.tokenStorage.buyPrice / 1000000, $store.tokenStorage.metadata.decimals.toNumber())}
+              XTZ
             </p>
           {:else}Unavailable{/if}
         </div>

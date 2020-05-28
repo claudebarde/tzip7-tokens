@@ -78,11 +78,9 @@
   </p>
   <br />
   <div>
-    <label for="addressToApprove">
-      Which address do you want to send tokens to?
-    </label>
+    <label for="transferTo">Which address do you want to send tokens to?</label>
     <input
-      id="addressToApprove"
+      id="transferTo"
       class="input"
       class:is-danger={transferError}
       type="text"

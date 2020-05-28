@@ -2,6 +2,7 @@
   import store from "../../store";
 
   let amount = "";
+  let price = undefined;
   let buyError = false;
   let buying = false;
   let errorMessage = "error";
@@ -11,21 +12,41 @@
     buyError = false;
     if (value) {
       amount = parseInt(value);
-      buyError = amount > $store.tokenStorage.tokenBuyPool.toNumber();
+      price =
+        (amount *
+          store.formatWithDecimals(
+            "multiply",
+            $store.tokenStorage.buyPrice,
+            $store.tokenStorage.metadata.decimals
+          )) /
+        1000000;
+      buyError =
+        amount >
+        store.formatWithDecimals(
+          "divide",
+          $store.tokenStorage.tokenBuyPool.toNumber(),
+          $store.tokenStorage.metadata.decimals
+        );
       errorMessage = "There are not enough tokens available in the pool";
     } else {
       amount = "";
     }
   };
 
-  const transfer = async () => {
-    // transfer tokens
+  const buy = async () => {
+    // buy tokens
     buyError = false;
     buying = true;
+    // adjusts number of tokens taking the decimals into account
+    const amountWithDecimals = store.formatWithDecimals(
+      "multiply",
+      amount,
+      $store.tokenStorage.metadata.decimals.toNumber()
+    );
     try {
       const op = await $store.tokenInstance.methods
-        .buy(amount)
-        .send({ amount: amount * $store.tokenStorage.buyPrice, mutez: true });
+        .buy(amountWithDecimals)
+        .send({ amount: price * 1000000, mutez: true });
       await op.confirmation();
       if (window.localStorage) {
         const txHistoryItem = `${$store.tokenStorage.metadata.symbol}txsHistory`;
@@ -47,7 +68,7 @@
         }
       }
       // updates user's balance
-      store.updateUserBalance($store.userBalance + amount);
+      store.updateUserBalance($store.userBalance + amountWithDecimals);
       // gets new storage
       store.updateTokenStorage({
         ...$store.tokenStorage,
@@ -55,10 +76,14 @@
       });
       amount = "";
       buying = false;
+      price = undefined;
     } catch (error) {
       console.log(error);
       buyError = true;
+      if (error.message) errorMessage = error.message;
+
       buying = false;
+      price = undefined;
     }
   };
 </script>
@@ -103,14 +128,12 @@
     <button class="button is-static">
       {#if buyError}
         Error
-      {:else}
-        {amount || 0} token{amount > 1 ? 's' : ''} for ꜩ {(amount * $store.tokenStorage.buyPrice) / 1000000}
-      {/if}
+      {:else}{amount || 0} token{amount > 1 ? 's' : ''} for ꜩ {price || 0}{/if}
     </button>
     <button
       class="button is-success"
       class:is-loading={buying}
-      on:click={transfer}
+      on:click={buy}
       disabled={!amount || buyError}>
       Buy
     </button>

@@ -12,9 +12,14 @@
 
   const setPrice = async () => {
     settingPrice = true;
+    const priceWithDecimals = store.formatWithDecimals(
+      "divide",
+      price,
+      $store.tokenStorage.metadata.decimals.toNumber()
+    );
     try {
       const op = await $store.tokenInstance.methods
-        .setBuyPrice(price * 1000000)
+        .setBuyPrice(priceWithDecimals * 1000000)
         .send({ mutez: true });
       await op.confirmation();
       settingPrice = false;
