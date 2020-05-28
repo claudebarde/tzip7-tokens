@@ -8,6 +8,7 @@
   import Approve from "../components/Manage/Approve.svelte";
   import RemoveApproval from "../components/Manage/RemoveApproval.svelte";
   import BurnTokens from "../components/Manage/BurnTokens.svelte";
+  import AddExtra from "../components/Manage/AddExtra.svelte";
   import store from "../store";
 
   export let params = {};
@@ -184,10 +185,22 @@
           <div class="container">
             <p class="title is-3 has-text-centered is-hidden-mobile">
               Manage your token - {tokenSymbol}
+              {#if $store.tokenStorage && $store.tokenStorage.metadata.extras.has('icon')}
+                <img
+                  class="image is-32x32 token-icon"
+                  src={$store.tokenStorage.metadata.extras.get('icon')}
+                  alt="icon" />
+              {/if}
             </p>
             <p class="title is-3 has-text-centered is-hidden-desktop">
               Manage your token
               <br />
+              {#if $store.tokenStorage && $store.tokenStorage.metadata.extras.has('icon')}
+                <img
+                  class="image is-32x32 token-icon"
+                  src={$store.tokenStorage.metadata.extras.get('icon')}
+                  alt="icon" />
+              {/if}
               {tokenSymbol}
             </p>
             <TokenInfo />
@@ -213,6 +226,11 @@
               </div>
               <div class="column is-two-fifths">
                 <BurnTokens />
+              </div>
+            </div>
+            <div class="columns is-centered">
+              <div class="column is-three-fifths">
+                <AddExtra />
               </div>
             </div>
           </div>

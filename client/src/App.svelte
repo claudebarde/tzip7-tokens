@@ -70,6 +70,6 @@
 <Router {routes} />
 {#if error}
   <div class="notification is-danger error">
-    The main contract couldn't be found or its storage couldn't be loaded.
+    The main contract couldn't be found or its storage couldn't be loaded ({$store.contractAddress}).
   </div>
 {/if}

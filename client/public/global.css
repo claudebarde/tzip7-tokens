@@ -28,6 +28,11 @@ body {
   width: 100%;
 }
 
+.token-icon {
+  display: inline-block !important;
+  vertical-align: top;
+}
+
 @media only screen and (max-width: 1024px) {
   .interface__main {
     padding-top: 50px;

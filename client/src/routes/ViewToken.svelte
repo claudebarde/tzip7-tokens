@@ -119,9 +119,21 @@
           </div>
         {:else if token}
           <p class="title is-3 has-text-centered is-hidden-mobile">
+            {#if $store.tokenStorage && $store.tokenStorage.metadata.extras.has('icon')}
+              <img
+                class="image is-32x32 token-icon"
+                src={$store.tokenStorage.metadata.extras.get('icon')}
+                alt="icon" />
+            {/if}
             {token.name} ({token.symbol}) Token Interface
           </p>
           <p class="title is-3 has-text-centered is-hidden-desktop">
+            {#if $store.tokenStorage && $store.tokenStorage.metadata.extras.has('icon')}
+              <img
+                class="image is-32x32 token-icon"
+                src={$store.tokenStorage.metadata.extras.get('icon')}
+                alt="icon" />
+            {/if}
             {token.name} ({token.symbol})
             <br />
             Token Interface

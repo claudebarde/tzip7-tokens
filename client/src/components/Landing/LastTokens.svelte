@@ -39,7 +39,7 @@
       {#each tokenChunks as tokens}
         <div class="column is-one-third">
           {#each tokens as token}
-            <div class="subtitle is-6" style="margin-top:20px;">
+            <div style="margin-top:10px;">
               <a href={`#/view/${token.symbol}`}>
                 {token.symbol} ({token.name})
               </a>

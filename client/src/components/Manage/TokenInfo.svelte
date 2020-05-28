@@ -112,7 +112,11 @@
                 href={`https://carthage.tzkt.io/${$store.tokenStorage.owner}/operations`}
                 target="_blank"
                 rel="noreferrer noopener">
-                {$store.tokenStorage.owner.slice(0, 7) + '...' + $store.tokenStorage.owner.slice(-7)}
+                {#if $store.tokenStorage.metadata.extras.has('owner')}
+                  {$store.tokenStorage.metadata.extras.get('owner')}
+                {:else}
+                  {$store.tokenStorage.owner.slice(0, 7) + '...' + $store.tokenStorage.owner.slice(-7)}
+                {/if}
               </a>
             </p>
           {:else}Unavailable{/if}
