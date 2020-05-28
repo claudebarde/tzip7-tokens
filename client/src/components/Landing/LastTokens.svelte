@@ -3,6 +3,7 @@
   import store from "../../store";
 
   let tokenChunks = [];
+  let loading = true;
 
   afterUpdate(async () => {
     if (
@@ -22,6 +23,7 @@
         .fill()
         .map((_, index) => index * 3)
         .map(begin => _tokens.slice(begin, begin + 3));
+      loading = false;
     }
   });
 </script>
@@ -47,11 +49,17 @@
           {/each}
         </div>
       {:else}
-        <div class="column is-one-third">
-          <div class="subtitle is-6" style="margin-top:20px;">
-            No token created yet!
+        {#if loading}
+          <div class="column is-one-third">
+            <div class="subtitle is-6" style="margin-top:20px;">Loading...</div>
           </div>
-        </div>
+        {:else}
+          <div class="column is-one-third">
+            <div class="subtitle is-6" style="margin-top:20px;">
+              No token created yet!
+            </div>
+          </div>
+        {/if}
       {/each}
     </div>
   {:else}
