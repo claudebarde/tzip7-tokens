@@ -147,6 +147,9 @@
   }
 </style>
 
+<svelte:head>
+  <title>TZIP-7 tokens</title>
+</svelte:head>
 {#if openConfirmModal}
   <div class="modal is-active">
     <div class="modal-background" />

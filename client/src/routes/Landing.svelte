@@ -19,6 +19,9 @@
   }
 </style>
 
+<svelte:head>
+  <title>TZIP-7 tokens</title>
+</svelte:head>
 <div class="ui">
   <div class="ui-main">
     <Presentation />
