@@ -59,27 +59,11 @@ const state = {
       if (action === "multiply") {
         // MULTIPLICATION
 
-        let multiplier = "1";
-        // creates multiplier
-        for (let i = 0; i < decimals; i++) {
-          multiplier += "0";
-        }
-        // converts divisor to number
-        multiplier = parseInt(multiplier);
-
-        return amount * multiplier;
+        return amount * 10 ** decimals;
       } else if (action === "divide") {
         // DIVISION
 
-        let divisor = "1";
-        // creates divisor
-        for (let i = 0; i < decimals; i++) {
-          divisor += "0";
-        }
-        // converts divisor to number
-        divisor = parseInt(divisor);
-
-        return amount / divisor;
+        return amount / 10 ** decimals;
       }
     }
 
