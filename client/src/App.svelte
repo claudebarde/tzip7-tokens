@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import Router from "svelte-spa-router";
-  import { Tezos } from "@taquito/taquito";
+  import { TezosToolkit } from "@taquito/taquito";
   import { TezBridgeSigner } from "@taquito/tezbridge-signer";
   //import { TezBridgeWallet } from "@taquito/tezbridge-wallet";
   import Landing from "./routes/Landing.svelte";
@@ -20,25 +20,18 @@
 
   let error = false;
 
+  let Tezos;
+
   onMount(async () => {
     // loads storage from AddToken smart contract
     if (config.NETWORK === "local") {
-      Tezos.setProvider({
-        rpc: "http://localhost:8732",
-        signer: new TezBridgeSigner()
-      });
-      /*Tezos.setProvider({
-        rpc: "http://localhost:8732",
-        wallet: new TezBridgeWallet()
-      });*/
+      Tezos = new TezosToolkit("http://localhost:8732");
     } else if (config.NETWORK === "carthage") {
-      Tezos.setProvider({
-        rpc: "https://carthagenet.SmartPy.io",
-        signer: new TezBridgeSigner()
-      });
+      Tezos = new TezosToolkit("https://testnet-tezos.giganode.io");
     } else {
       console.error("No network specified");
     }
+    Tezos.setSignerProvider(new TezBridgeSigner());
     store.updateTezos(Tezos);
     try {
       // creates contract instance

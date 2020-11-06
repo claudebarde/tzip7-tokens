@@ -2,10 +2,11 @@
   "name": "tezos-starter-kit",
   "version": "1.0.0",
   "description": "Website for FA1.2 tokens demo built on Matej Sima test suite (matej.sima@stove-labs.com)",
-  "dependencies": {},
+  "dependencies": {
+    "@taquito/taquito": "^7.0.0-beta.0"
+  },
   "devDependencies": {
     "@taquito/signer": "^6.2.0-beta.0",
-    "@taquito/taquito": "^6.1.1-beta.0",
     "lodash": "^4.17.15",
     "promise-retry": "^1.1.1",
     "truffle": "^5.3.0-tezos.2"
